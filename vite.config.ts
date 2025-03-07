@@ -45,7 +45,6 @@ export default defineConfig(({ mode }) => {
         logger: true, // 打印日志
       }),
     ],
-    base: '/asp-admin-xms/',
     server: {
       port: 8000,
       open: true,
@@ -95,11 +94,10 @@ export default defineConfig(({ mode }) => {
         },
         mangle: true,
         output: {
-          comments: false, // 移除注释
+          comments: true, // 移除注释
         },
       },
       rollupOptions: {
-        input: 'src/main.tsx',
         output: {
           manualChunks(id) {
             return manualChunks(id);
