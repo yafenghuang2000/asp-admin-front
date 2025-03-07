@@ -49,7 +49,7 @@ export default [
           map: [
             ['@', './src'], // 假设你的项目中 '@' 别名指向 'src' 目录
           ],
-          extensions: ['.js', '.jsx', '.ts', '.tsx', 'json'],
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },
       },
     },
