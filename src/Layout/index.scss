@@ -1,0 +1,105 @@
+.asp-comprehension-home {
+  width: 100%;
+  height: 100%;
+
+  :where(.css-dev-only-do-not-override-1htoz2s).ant-menu-light,
+  :where(.css-dev-only-do-not-override-1htoz2s).ant-menu-light > .ant-menu {
+    height: 100%;
+  }
+
+  &-menu {
+    display: flex;
+    flex-shrink: 0;
+    height: 100%;
+    transition: width 0.28s;
+    flex-direction: column;
+    margin-top: 5px;
+    border-right: 1px solid #e9ebed;
+
+    &-logo {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      height: 40px;
+      padding: 0 15px;
+      margin: 0 10px;
+      background: #237ffa;
+      border-radius: 4px;
+      transition: padding 0.28s;
+
+      img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+      }
+
+      &-title {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+    }
+
+    &-search {
+      position: relative;
+      z-index: 1000;
+      flex-shrink: 0;
+      padding: 12px 12px 0;
+    }
+
+    &-content {
+      flex-grow: 1;
+      width: 100%;
+      height: calc(100% - 106px);
+      overflow-y: hidden;
+      margin-top: 12px;
+
+      &:hover {
+        // 鼠标移入时
+        overflow-y: auto; // 显示滚动条
+      }
+    }
+  }
+
+  &-header {
+    width: 100%;
+    height: 65px;
+    padding: 12px;
+    background-color: rgb(255 255 255);
+    border-bottom: 1px solid #e9ebed;
+
+    &-content {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+
+      &-user {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: fit-content;
+        min-width: 100px;
+        color: #000;
+        font-size: 16px;
+        font-weight: 700;
+
+        img {
+          width: 40px;
+          height: 40px;
+          // border-radius: 50%;
+          border-radius: 8px;
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  &-content {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255 255 255 / 10%);
+  }
+}
