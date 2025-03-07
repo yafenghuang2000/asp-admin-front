@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-// import routersData from './routerModels';
-// import userinfo from './userModels';
+import routersData from './routerModels';
+import userinfo from './userModels';
 
 const rootReducer = combineReducers({
-  // userinfo,
-  // routersData,
+  userinfo,
+  routersData,
 });
 
 const whitelist = ['userinfo'];

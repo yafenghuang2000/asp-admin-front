@@ -99,7 +99,7 @@ const Home: React.FC = () => {
             <div className='asp-comprehension-home-header-content'>
               <div className='asp-comprehension-home-header-content-user'>
                 <img src={userImg} alt='' />
-                <div>{userinfo.name}</div>
+                <div>{userinfo.name ?? 'admin'}</div>
               </div>
             </div>
           </Header>
