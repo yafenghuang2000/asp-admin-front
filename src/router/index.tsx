@@ -1,10 +1,10 @@
-import { lazy } from 'react';
+import loadable from '@loadable/component';
 import { createHashRouter, redirect } from 'react-router-dom';
 
-const LayoutHome = lazy(() => import('@/Layout'));
-const Home = lazy(() => import('@/pages/Home'));
-const Login = lazy(() => import('@/pages/Login'));
-const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
+const LayoutHome = loadable(() => import('@/Layout'));
+const Home = loadable(() => import('@/pages/Home'));
+const Login = loadable(() => import('@/pages/Login'));
+const NotFoundPage = loadable(() => import('@/pages/NotFoundPage'));
 
 const isUserAuthenticated = () => {
   const user = 'admin';
