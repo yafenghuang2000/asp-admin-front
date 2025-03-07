@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    /* 类型检查 */
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+
+    /* 模块解析 */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+
+    /* 其他 */
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    /* 阿里巴巴推荐的 TypeScript 规范 */
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "alwaysStrict": true,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
