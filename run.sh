@@ -18,6 +18,7 @@ docker pull ${IMAGE_NAME} || {
 # 检查端口是否被占用
 while true; do
   if ! lsof -i :${PORT} > /dev/null 2>&1; then
+    echo "端口 ${PORT} 可用"
     break
   fi
   echo "端口 ${PORT} 已被占用，尝试端口 $((PORT + 1))"

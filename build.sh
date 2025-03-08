@@ -10,7 +10,7 @@ export CURRENT_TIME=$(date +"%Y%m%d-%H%M%S")
 echo "当前时间: ${CURRENT_TIME}"
 
 # 设置镜像名称，拼接当前时间
-IMAGE_NAME="${DOCKER_USERNAME}/${REPO_NAME}:${ENV}-${CURRENT_TIME}"
+export IMAGE_NAME="${DOCKER_USERNAME}/${REPO_NAME}:${ENV}-${CURRENT_TIME}"
 echo "镜像名称: ${IMAGE_NAME}"
 
 # 登录 DockerHub
@@ -21,7 +21,7 @@ echo "5820@Feng" | docker login -u yafenghuang2000@gmail.com --password-stdin ||
 
 # 构建镜像
 echo "开始构建 ${IMAGE_NAME} 镜像..."
-docker-compose build --build-arg ENV=${ENV} || {
+docker-compose build --build-arg NODE_ENV=${ENV} || {
   echo "镜像构建失败"
   exit 1
 }
