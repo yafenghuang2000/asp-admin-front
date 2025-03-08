@@ -51,6 +51,7 @@ export default defineConfig(({ mode }) => {
         logger: true, // 打印日志
       }),
     ],
+    base: '/asp-xms-vite/',
     server: {
       port: 8000,
       open: true,
