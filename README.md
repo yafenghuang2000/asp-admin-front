@@ -1,1 +1,4 @@
-"packageManager": "pnpm@9.15.4"
+module.exports = {
+    'unit-whitelist': ['em', 'rem', '%', 's'],
+
+};

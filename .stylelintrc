@@ -2,14 +2,33 @@
   "extends": [
     "stylelint-config-standard",
     "stylelint-config-standard-scss",
-    "stylelint-config-recommended-vue"
+    "stylelint-config-recommended-scss",
+    "stylelint-config-recommended-vue",
+    "stylelint-config-ali"
   ],
-  "plugins": ["stylelint-order"],
+  "plugins": ["stylelint-order", "stylelint-scss"],
   "rules": {
     "order/properties-alphabetical-order": true,
     "selector-class-pattern": null,
     "no-descending-specificity": null,
     "at-rule-no-unknown": null,
-    "scss/at-rule-no-unknown": true
-  }
+    "function-url-quotes": ["always", { "except": ["empty"] }],
+    "scss/dollar-variable-default": [true, { "ignore": "local" }],
+    "color-no-invalid-hex": [true, { "severity": "warning" }],
+    "color-named": ["never", { "ignore": ["inside-function"] }],
+    "at-rule-disallowed-list": ["while"],
+    "declaration-block-single-line-max-declarations": 1,
+    "block-no-empty": true,
+    "color-hex-length": "short",
+    "property-no-vendor-prefix": [true, { "severity": "warning" }],
+    "value-no-vendor-prefix": [true, { "severity": "warning" }],
+    "unit-whitelist": ["em", "rem", "%", "s", "px", "vh", "vw", "vmin", "vmax", "deg", "ms", "fr"],
+    "scss/at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["tailwind", "layer", "apply", "variants", "responsive", "screen"]
+      }
+    ]
+  },
+  "ignoreFiles": ["node_modules", "src/**/*.tsx", "src/**/*.ts", "src/**/*.jsx", "src/**/*.js"]
 }
