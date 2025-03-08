@@ -1,10 +1,12 @@
+version: '3.8'
+
 services:
   app:
     build:
       context: .
       args:
         - NODE_ENV=${NODE_ENV:-production}
-    image: yafenghuang/asp-xms-vite:${NODE_ENV:-production}
+    image: yafenghuang/asp-xms-vite:${NODE_ENV:-production}-${CURRENT_TIME}
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - VITE_APP_ENV=${VITE_APP_ENV:-development}
