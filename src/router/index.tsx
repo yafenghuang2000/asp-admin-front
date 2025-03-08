@@ -1,5 +1,5 @@
 import loadable from '@loadable/component';
-import { createBrowserRouter, redirect } from 'react-router-dom';
+import { createHashRouter, redirect } from 'react-router-dom';
 
 const LayoutHome = loadable(() => import('@/Layout'));
 const Home = loadable(() => import('@/pages/Home'));
@@ -14,7 +14,7 @@ const isUserAuthenticated = () => {
   return null;
 };
 
-const routers = createBrowserRouter([
+const routers = createHashRouter([
   {
     path: '/',
     element: <LayoutHome />,
