@@ -1,0 +1,20 @@
+.xms-header {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 0 20px;
+
+  &-title {
+    font-size: 20px;
+    line-height: 28px;
+    color: #333;
+    font-weight: 600;
+    margin-right: 30px;
+    cursor: pointer;
+    transition: all 0.1s;
+    padding-bottom: 10px;
+  }
+}
