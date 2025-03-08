@@ -1,9 +1,1 @@
-
-
-
-
-
-
-[//]: # (    "eslint-import-resolver-typescript": "^3.7.0",)
-
-
+"packageManager": "pnpm@9.15.4"
