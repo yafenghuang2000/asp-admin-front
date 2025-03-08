@@ -1,19 +1,11 @@
-import request, { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import request, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { notification } from 'antd';
 import { getCookie } from './cookies';
-type ParamValue = string | number | null | undefined | boolean | Date;
-interface IParamsType {
-  [key: string]: ParamValue | ParamValue[];
-}
-
-interface ISAxiosResponse {
-  handleRaw?: boolean;
-}
 
 interface IResponseConfig<T> {
   url: string;
   data?: T;
-  params?: ISAxiosResponse;
+  handleRaw?: boolean;
 }
 
 request.interceptors.request.use(
@@ -26,34 +18,20 @@ request.interceptors.request.use(
     return config;
   },
   (error) => {
-    throw new Error(error);
+    return Promise.reject(error);
   },
 );
 
-const getQueryString = (params: IParamsType): string => {
-  if (!params) return '';
-  const result: string[] = [];
-  Object.keys(params).forEach((key) => {
-    const value = params[key];
-    if (Array.isArray(value)) {
-      result.push(`${key}=${encodeURIComponent(value.join(','))}`);
-    } else {
-      result.push(`${key}=${encodeURIComponent(String(value))}`);
-    }
-  });
-  return result.join('&');
-};
-
-const parse = (res: AxiosResponse, params: ISAxiosResponse) => {
+const parse = (res: AxiosResponse, params: { handleRaw: boolean }) => {
   const { status, data } = res;
-  const { handleRaw } = params;
+  const { handleRaw } = params || {};
   switch (status) {
     case 200:
       if (handleRaw) {
-        return res.data;
+        return data;
       }
       if (data.code === 0) {
-        return res.data.data;
+        return data.data;
       } else if (data.code === 401) {
         notification.open({
           type: 'warning',
@@ -84,6 +62,14 @@ const parse = (res: AxiosResponse, params: ISAxiosResponse) => {
       });
       window.location.reload();
       break;
+    case 404:
+      notification.open({
+        type: 'warning',
+        message: '系统提示',
+        description: '访问地址不存在,请联系管理',
+        placement: 'bottomRight',
+      });
+      break;
     default:
       notification.open({
         type: 'error',
@@ -92,79 +78,119 @@ const parse = (res: AxiosResponse, params: ISAxiosResponse) => {
         placement: 'bottomRight',
         duration: 5000,
       });
-      return;
   }
 };
 
-const get = async <T>(params: IResponseConfig<T>): Promise<T> => {
+const get = async <T>(data: IResponseConfig<T>): Promise<T> => {
   try {
-    const queryValues = getQueryString(params.data || {});
-    const result: AxiosResponse = await request.get(
-      queryValues ? `${params.url}?${queryValues}` : params.url,
-    );
-    return parse(result, params.params || {});
+    const response: AxiosResponse = await request({
+      method: 'GET',
+      url: data.url,
+      params: data.data,
+    });
+    const parsedParams = { handleRaw: !!data.handleRaw };
+    return parse(response, parsedParams) as unknown as T;
+  } catch (e) {
+    return Promise.reject(e);
+  }
+};
+
+const post = async <T>(data: IResponseConfig<T>): Promise<T> => {
+  try {
+    const response: AxiosResponse = await request({
+      method: 'POST',
+      url: data.url,
+      data: data.data,
+    });
+    const parsedParams = { handleRaw: !!data.handleRaw };
+    return parse(response, parsedParams);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+const put = async <T>(data: IResponseConfig<T>): Promise<T> => {
+  try {
+    const response: AxiosResponse = await request({
+      method: 'PUT',
+      url: data.url,
+      data: data.data,
+    });
+    const parsedParams = { handleRaw: !!data.handleRaw };
+    return parse(response, parsedParams);
   } catch (error) {
     console.log(error);
     return Promise.reject(error);
   }
 };
 
-const post = async <T>(params: IResponseConfig<T>): Promise<T> => {
+const del = async <T>(data: IResponseConfig<T>): Promise<T> => {
   try {
-    const result: AxiosResponse = await request.post(params.url, params.data);
-    return parse(result, params.params || {});
-  } catch (error) {
-    console.log(error, '请求错误', {});
-    return Promise.reject(error);
-  }
-};
-
-const put = async <T>(params: IResponseConfig<T>): Promise<T> => {
-  try {
-    const result: AxiosResponse = await request.put(params.url, params.data);
-    return parse(result, params.params || {});
+    const response: AxiosResponse = await request({
+      method: 'DELETE',
+      url: data.url,
+      data: data.data,
+    });
+    const parsedParams = { handleRaw: !!data.handleRaw };
+    return parse(response, parsedParams);
   } catch (error) {
     console.log(error);
     return Promise.reject(error);
   }
 };
 
-const del = async <T>(params: IResponseConfig<T>): Promise<T> => {
-  try {
-    const result: AxiosResponse = await request.delete(params.url, { data: params.data });
-    return parse(result, params.params || {});
-  } catch (error) {
-    console.log(error);
-    return Promise.reject(error);
+const uploadSingleFile = async <T>(data: IResponseConfig<File | Blob>): Promise<T> => {
+  if (!data.data) {
+    throw new Error('File or Blob data is required');
   }
-};
 
-/**
- * 上传文件
- */
-const uploadFile = async <T>(params: IResponseConfig<T>): Promise<T> => {
   try {
     const formData = new FormData();
-    if (Array.isArray(params.data)) {
-      params.data.forEach((file) => {
-        if (file instanceof Blob || file instanceof File) {
-          formData.append('files', file); // 使用 'files' 作为字段名以支持多个文件
-        }
-      });
-    } else if (params.data instanceof Blob || params.data instanceof File) {
-      formData.append('file', params.data);
-    }
-
-    const result: AxiosResponse = await request.post(params.url, formData, {
+    formData.append('file', data.data);
+    const response = await request({
+      method: 'POST',
+      url: data.url,
+      data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return parse(result, params.params || {});
+
+    const parsedParams = { handleRaw: !!data.handleRaw };
+    return parse(response, parsedParams);
   } catch (error) {
-    console.log(error);
     return Promise.reject(error);
   }
 };
 
-export { get, post, put, del, uploadFile };
+const uploadFile = async <T>(data: IResponseConfig<File[] | Blob[]>): Promise<T> => {
+  if (!Array.isArray(data.data)) {
+    throw new Error('Data must be an array of File or Blob objects');
+  }
+
+  const formData = new FormData();
+  data.data.forEach((file, index) => {
+    if (!(file instanceof File || file instanceof Blob)) {
+      throw new Error(`Element at index ${index} is not a File or Blob object`);
+    }
+    formData.append('files', file); // 使用 'files' 作为字段名以支持多个文件
+  });
+
+  try {
+    const response = await request({
+      method: 'POST',
+      url: data.url,
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    const parsedParams = { handleRaw: !!data.handleRaw };
+    return parse(response, parsedParams);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export { get, post, put, del, uploadSingleFile, uploadFile };
