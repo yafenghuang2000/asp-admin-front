@@ -3,7 +3,7 @@ import type { MenuProps } from 'antd';
 import { Input, Layout, Menu } from 'antd';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { IStoreProps } from '@/models/type';
+import { IStoreProps } from '@/reducer/type';
 import userImg from '@/assets/useer.svg';
 import xmsImg from '@/assets/xmsImg.svg';
 import { convertToMenuItems, IMenuItem } from './data';
