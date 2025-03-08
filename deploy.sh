@@ -13,7 +13,7 @@ if [ -z "$REMOTE_HOST" ]; then
 fi
 
 # 从镜像名称中提取环境名称
-ENV=$(echo ${IMAGE_NAME} | awk -F':' '{print $2}' | awk -F'-' '{print $1}')
+ENV=$(echo "${IMAGE_NAME}" | awk -F':' '{print $2}' | awk -F'-' '{print $1}')
 if [ -z "$ENV" ]; then
   echo "错误：无法从镜像名称中提取环境名称"
   exit 1
@@ -30,21 +30,21 @@ fi
 
 # 将镜像重新标记为 CONTAINER_NAME
 echo "将镜像 ${IMAGE_NAME} 重新标记为 ${CONTAINER_NAME}..."
-docker tag ${IMAGE_NAME} ${CONTAINER_NAME} || {
+docker tag "${IMAGE_NAME}" "${CONTAINER_NAME}" || {
   echo "镜像重新标记失败"
   exit 1
 }
 
 # 推送镜像到远程服务器
 echo "推送镜像 ${CONTAINER_NAME} 到远程服务器 ${REMOTE_HOST}..."
-docker save ${CONTAINER_NAME} | ssh -p ${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_HOST} "docker load" || {
+docker save "${CONTAINER_NAME}" | ssh -p "${REMOTE_PORT}" "${REMOTE_USER}"@"${REMOTE_HOST}" "docker load" || {
   echo "镜像推送失败"
   exit 1
 }
 
 # 在远程服务器上启动容器
 echo "在远程服务器 ${REMOTE_HOST} 上启动容器..."
-ssh -p ${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_HOST} << EOF
+ssh -p "${REMOTE_PORT}" "${REMOTE_USER}"@"${REMOTE_HOST}" << EOF
   # 停止并删除旧容器（如果存在）
   docker stop ${CONTAINER_NAME} || true
   docker rm ${CONTAINER_NAME} || true

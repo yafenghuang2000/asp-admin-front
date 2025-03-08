@@ -8,12 +8,14 @@ REPO_NAME=${REPO_NAME:-asp-xms-vite}
 # 加载对应的环境变量文件
 if [ -f ".env.${ENV}" ]; then
   echo "加载 .env.${ENV} 文件..."
+  # shellcheck disable=SC1090
   source ".env.${ENV}"
 else
   echo "未找到 .env.${ENV} 文件，使用默认环境变量"
 fi
 
 # 获取当前时间，格式为 YYYYMMDD-HHMMSS
+# shellcheck disable=SC2155
 export CURRENT_TIME=$(date +"%Y%m%d%H%M%S")
 echo "当前时间: ${CURRENT_TIME}"
 
@@ -43,7 +45,7 @@ docker-compose push || {
 
 # 验证镜像是否推送到 DockerHub
 echo "验证镜像是否推送到 DockerHub..."
-docker pull ${IMAGE_NAME} || {
+docker pull "${IMAGE_NAME}" || {
   echo "镜像未成功推送到 DockerHub"
   exit 1
 }
