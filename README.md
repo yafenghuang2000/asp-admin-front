@@ -1,17 +1,15 @@
-'unit-whitelist': ['em', 'rem', '%', 's'],
-
 ## 本地拉取访问的镜像
 
 ./run.sh yafenghuang/asp-xms-vite:test-20250309-001604 测试环境镜像
 
-## 部署打包
+## 推送到dockerhub
 
 ./build.sh test 测试环境打包
 ./build.sh production 生产环境打包
 ./build.sh staging 预发布环境打包
 
-## 部署
+## 部署线上服务器
 
-./deploy.sh test 测试环境部署
-./deploy.sh production 生产环境部署
-./deploy.sh staging 预发布环境部署
+./deploy.sh yafenghuang/asp-xms-vite:test-20250309-001604 测试环境部署
+./deploy.sh yafenghuang/asp-xms-vite:production-20250309-001604 生产环境部署
+./deploy.sh yafenghuang/asp-xms-vite:staging-20250309-001604 预发布环境部署
