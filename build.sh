@@ -18,7 +18,7 @@ export CURRENT_TIME=$(date +"%Y%m%d%H%M%S")
 echo "当前时间: ${CURRENT_TIME}"
 
 # 设置镜像名称，拼接环境名称和当前时间
-export IMAGE_NAME="${DOCKER_USERNAME}/${REPO_NAME}-${ENV}${CURRENT_TIME}:${ENV}"
+export IMAGE_NAME="${DOCKER_USERNAME}/${REPO_NAME}-${ENV}:${ENV}-${CURRENT_TIME}"
 echo "镜像名称: ${IMAGE_NAME}"
 
 # 登录 DockerHub
