@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import legacy from '@vitejs/plugin-legacy';
 import fs from 'fs';
+import stylelint from 'vite-plugin-stylelint';
 import { viteMockServe } from 'vite-plugin-mock';
 
 const manualChunks = (id: string): string | null => {
@@ -37,6 +38,11 @@ export default defineConfig(({ mode }) => {
       react(),
       legacy({
         targets: ['defaults', 'not IE 11'],
+      }),
+      stylelint({
+        fix: true,
+        include: ['src/**/*.{css,scss}'],
+        exclude: ['node_modules'],
       }),
       viteMockServe({
         mockPath: 'mock',
