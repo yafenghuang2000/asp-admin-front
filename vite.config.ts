@@ -2,34 +2,8 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import legacy from '@vitejs/plugin-legacy';
-// import fs from 'fs';
-// import stylelint from 'vite-plugin-stylelint';
+import stylelint from 'vite-plugin-stylelint';
 import { viteMockServe } from 'vite-plugin-mock';
-
-// const manualChunks = (id: string): string | null => {
-//   if (id.includes('node_modules')) {
-//     // 确保路径中没有空字节和查询参数
-//     const cleanId = id.replace(/\0/g, '').split('?')[0];
-//     // 获取文件大小（以字节为单位）
-//     const fileSize = fs.statSync(cleanId).size;
-//     const ONE_MB = 1024 * (1024 * 2);
-//     // 优先处理 react 和 antd 相关包
-//     if (cleanId.includes('react')) {
-//       return fileSize > ONE_MB ? 'react-vendor-large' : 'react-vendor';
-//     }
-//     if (cleanId.includes('@ant-design') || cleanId.includes('antd')) {
-//       return fileSize > ONE_MB ? 'antd-vendor-large' : 'antd-vendor';
-//     }
-//     // 处理其他包
-//     if (fileSize > ONE_MB) {
-//       const pkgName = cleanId.toString().split('node_modules/')[1].split('/')[0].toString();
-//       return `vendor-large-${pkgName.replace('@', '').replace('/', '_')}`;
-//     }
-//     return 'vendor';
-//   }
-
-//   return null;
-// };
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -39,11 +13,11 @@ export default defineConfig(({ mode }) => {
       legacy({
         targets: ['defaults', 'not IE 11'],
       }),
-      // stylelint({
-      //   fix: true,
-      //   include: ['src/**/*.{css,scss}'],
-      //   exclude: ['node_modules'],
-      // }),
+      stylelint({
+        fix: true,
+        include: ['src/**/*.{css,scss}'],
+        exclude: ['node_modules'],
+      }),
       viteMockServe({
         mockPath: 'mock',
         enable: true, // 设置为true，开启mock功能
@@ -105,26 +79,7 @@ export default defineConfig(({ mode }) => {
         },
       },
       rollupOptions: {
-        output: {
-          // manualChunks(id) {
-          //   return manualChunks(id);
-          // },
-          // chunkFileNames: (chunkInfo) => {
-          //   return chunkInfo.name.includes('vendor')
-          //     ? 'js/vendor/[name].[hash].js'
-          //     : 'js/app/[name].[hash].js';
-          // },
-          // entryFileNames: 'js/app/[name].[hash].js',
-          // assetFileNames: (assetInfo) => {
-          //   // 根据 asset 的类型和路径决定输出子目录
-          //   if (assetInfo.name && assetInfo.name.endsWith('.css')) {
-          //     return assetInfo.name.includes('node_modules')
-          //       ? 'css/vendor/[name].[hash].[ext]'
-          //       : 'css/app/[name].[hash].[ext]';
-          //   }
-          //   return 'assets/[name].[hash].[ext]';
-          // },
-        },
+        output: {},
       },
     },
   };
