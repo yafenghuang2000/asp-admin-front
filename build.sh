@@ -14,7 +14,6 @@ else
   echo "未找到 .env.${ENV} 文件，使用默认环境变量"
 fi
 
-# 获取当前时间，格式为 YYYYMMDD-HHMMSS
 # shellcheck disable=SC2155
 export CURRENT_TIME=$(date +"%Y%m%d%H%M%S")
 echo "当前时间: ${CURRENT_TIME}"

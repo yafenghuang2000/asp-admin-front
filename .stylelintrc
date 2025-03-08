@@ -9,7 +9,12 @@
   "plugins": ["stylelint-order", "stylelint-scss"],
   "rules": {
     "order/properties-alphabetical-order": true,
-    "selector-class-pattern": null,
+    "selector-class-pattern": [
+      "^[a-z][a-z0-9-]*$",
+      {
+        "message": "类名应只包含小写字母、数字和连字符"
+      }
+    ],
     "no-descending-specificity": null,
     "at-rule-no-unknown": null,
     "function-url-quotes": ["always", { "except": ["empty"] }],
@@ -17,7 +22,6 @@
     "color-no-invalid-hex": [true, { "severity": "warning" }],
     "color-named": ["never", { "ignore": ["inside-function"] }],
     "at-rule-disallowed-list": ["while"],
-    "declaration-block-single-line-max-declarations": 1,
     "block-no-empty": true,
     "color-hex-length": "short",
     "property-no-vendor-prefix": [true, { "severity": "warning" }],
