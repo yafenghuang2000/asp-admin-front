@@ -1,0 +1,29 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        - NODE_ENV=${NODE_ENV:-production}
+    image: yafenghuang/asp-xms-vite:${NODE_ENV:-production}
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - VITE_APP_ENV=${VITE_APP_ENV:-development}
+      - VITE_APP_BASE_API=${VITE_APP_BASE_API:-http://localhost:9000}
+      - VITE_APP_TITLE=${VITE_APP_TITLE:-ASP XMS Vite}
+    networks:
+      - asp-xms-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app
+    networks:
+      - asp-xms-network
+
+networks:
+  asp-xms-network:
+    driver: bridge
