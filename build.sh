@@ -1,16 +1,24 @@
 #!/bin/bash
 
-# 设置环境变量
-ENV=${1:-production}
+# 设置默认值
+ENV=${1:-production}  # 从命令行参数中获取环境变量，默认为 production
 DOCKER_USERNAME=${DOCKER_USERNAME:-yafenghuang}
 REPO_NAME=${REPO_NAME:-asp-xms-vite}
 
+# 加载对应的环境变量文件
+if [ -f ".env.${ENV}" ]; then
+  echo "加载 .env.${ENV} 文件..."
+  source ".env.${ENV}"
+else
+  echo "未找到 .env.${ENV} 文件，使用默认环境变量"
+fi
+
 # 获取当前时间，格式为 YYYYMMDD-HHMMSS
-export CURRENT_TIME=$(date +"%Y%m%d-%H%M%S")
+export CURRENT_TIME=$(date +"%Y%m%d%H%M%S")
 echo "当前时间: ${CURRENT_TIME}"
 
-# 设置镜像名称，拼接当前时间
-export IMAGE_NAME="${DOCKER_USERNAME}/${REPO_NAME}:${ENV}-${CURRENT_TIME}"
+# 设置镜像名称，拼接环境名称和当前时间
+export IMAGE_NAME="${DOCKER_USERNAME}/${REPO_NAME}-${ENV}${CURRENT_TIME}:${ENV}"
 echo "镜像名称: ${IMAGE_NAME}"
 
 # 登录 DockerHub
