@@ -25,7 +25,7 @@ RUN pnpm run build:${NODE_ENV}
 FROM nginx:alpine
 
 # 复制Nginx配置文件
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
 # # 复制SSL/TLS证书
 # COPY ./ssl/certificate.crt /etc/nginx/ssl/certificate.crt
