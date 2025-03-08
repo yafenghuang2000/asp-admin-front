@@ -48,6 +48,6 @@
     "alwaysStrict": true,
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/postcss-split.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
