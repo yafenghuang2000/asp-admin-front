@@ -50,3 +50,5 @@ docker pull "${IMAGE_NAME}" || {
 }
 
 echo "构建并推送 ${IMAGE_NAME} 镜像完成"
+
+./run.sh "${IMAGE_NAME}"
