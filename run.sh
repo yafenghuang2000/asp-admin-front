@@ -35,7 +35,7 @@ docker pull "${IMAGE_NAME}" || {
 # 检查端口是否被占用
 port_attempts=0
 while [ ${port_attempts} -lt ${MAX_PORT_ATTEMPTS} ]; do
-  if ! lsof -i :"${PORT}" > /dev/null 2>&1; then
+  if ! lsof -i :"${PORT}" > /dev/null 999>&1; then
     echo "端口 ${PORT} 可用"
     break
   fi
