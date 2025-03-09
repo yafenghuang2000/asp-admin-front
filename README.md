@@ -13,3 +13,10 @@
 ./deploy.sh yafenghuang/asp-xms-vite:test-20250309-001604 测试环境部署
 ./deploy.sh yafenghuang/asp-xms-vite:production-20250309-001604 生产环境部署
 ./deploy.sh yafenghuang/asp-xms-vite:staging-20250309-001604 预发布环境部署
+
+
+# 清除 Docker 构建缓存
+docker builder prune
+
+# 清除 Docker 无用的镜像、容器、网络等
+docker system prune -a
