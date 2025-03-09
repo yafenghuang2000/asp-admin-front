@@ -28,6 +28,7 @@ echo "5820@Feng" | docker login -u yafenghuang2000@gmail.com --password-stdin ||
   exit 1
 }
 
+# 清理构建缓存
 docker builder prune
 
 # 构建镜像

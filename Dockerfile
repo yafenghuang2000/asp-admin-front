@@ -19,7 +19,7 @@ COPY . .
 # 根据环境变量构建应用
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
-RUN pnpm run build:${NODE_ENV}
+RUN pnpm build:${NODE_ENV}
 
 # 使用Nginx作为最终镜像
 FROM nginx:alpine
