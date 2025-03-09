@@ -1,5 +1,6 @@
 import loadable from '@loadable/component';
 import { createHashRouter, redirect } from 'react-router-dom';
+import { getCookie } from '@/utils/cookies.ts';
 
 const LayoutHome = loadable(() => import('@/Layout'));
 const Home = loadable(() => import('@/pages/Home'));
@@ -7,7 +8,7 @@ const Login = loadable(() => import('@/pages/Login'));
 const NotFoundPage = loadable(() => import('@/pages/NotFoundPage'));
 
 const isUserAuthenticated = () => {
-  const user = 'admin';
+  const user = getCookie('user');
   if (!user) {
     return redirect('/login');
   }

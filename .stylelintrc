@@ -26,7 +26,6 @@
     "color-hex-length": "short",
     "property-no-vendor-prefix": [true, { "severity": "warning" }],
     "value-no-vendor-prefix": [true, { "severity": "warning" }],
-    "unit-whitelist": ["em", "rem", "%", "s", "px", "vh", "vw", "vmin", "vmax", "deg", "ms", "fr"],
     "scss/at-rule-no-unknown": [
       true,
       {
