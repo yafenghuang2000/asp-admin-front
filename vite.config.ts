@@ -107,7 +107,7 @@ export default defineConfig(({ mode }) => {
                   .toString();
                 return `vendor-large-${pkgName.replace('@', '').replace('/', '_')}`;
               }
-              return 'vendor';
+              return null;
             }
 
             return null;
