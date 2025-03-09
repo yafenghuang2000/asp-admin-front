@@ -51,4 +51,7 @@ docker pull "${IMAGE_NAME}" || {
 
 echo "构建并推送 ${IMAGE_NAME} 镜像完成"
 
+## 运行容器
+# 本地部署访问执行 run.sh
+# 服务器部署访问执行 deploy.sh
 ./run.sh "${IMAGE_NAME}"
