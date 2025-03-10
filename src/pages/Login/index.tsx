@@ -2,6 +2,7 @@ import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProConfigProvider, ProFormText } from '@ant-design/pro-components';
 import { theme } from 'antd';
+import TrackingService from '@/utils/trackingService';
 import './index.scss';
 
 const Login: React.FC = () => {
@@ -17,11 +18,16 @@ const Login: React.FC = () => {
     return 'poor';
   };
 
+  const onFinish = (values: { username: string; password: string }) => {
+    console.log('Success:', values);
+    TrackingService.trackEvent('click', { buttonId: 'submit-button', openId: values.username });
+  };
+
   return (
     <div className='xms-login-container'>
       <ProConfigProvider hashed={false}>
         <div className='xms-login'>
-          <LoginForm title='Github' subTitle='全球最大的代码托管平台'>
+          <LoginForm title='Github' subTitle='全球最大的代码托管平台' onFinish={onFinish}>
             <div className='xms-login-form'>
               <ProFormText
                 name='username'

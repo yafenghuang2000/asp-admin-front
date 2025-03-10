@@ -47,6 +47,9 @@ importers:
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
+      dexie:
+        specifier: ^4.0.11
+        version: 4.0.11
       express:
         specifier: ^4.21.2
         version: 4.21.2
@@ -2266,6 +2269,9 @@ packages:
 
   detect-node@2.1.0:
     resolution: {integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==}
+
+  dexie@4.0.11:
+    resolution: {integrity: sha512-SOKO002EqlvBYYKQSew3iymBoN2EQ4BDw/3yprjh7kAfFzjBYkaMNa/pZvcA7HSWlcKSQb9XhPe3wKyQ0x4A8A==}
 
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -7054,6 +7060,8 @@ snapshots:
     optional: true
 
   detect-node@2.1.0: {}
+
+  dexie@4.0.11: {}
 
   dir-glob@3.0.1:
     dependencies:
