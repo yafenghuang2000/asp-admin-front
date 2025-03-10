@@ -12,13 +12,27 @@ const Login: React.FC = () => {
   const goHome = useGoHome();
 
   const getStatus = (value: string) => {
-    if (value && value.length > 12) {
-      return 'ok';
-    }
-    if (value && value.length > 6) {
-      return 'pass';
-    }
-    return 'poor';
+    if (!value || value.length < 6 || value.length > 8) return 'poor'; // 长度不符合要求，直接返回弱
+
+    // 判断字符种类
+    const hasNumber = /\d/.test(value); // 包含数字
+    const hasLowercase = /[a-z]/.test(value); // 包含小写字母
+    const hasUppercase = /[A-Z]/.test(value); // 包含大写字母
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value); // 包含特殊字符
+
+    // 纯数字
+    if (hasNumber && !hasLowercase && !hasUppercase && !hasSpecialChar) return 'poor';
+
+    // 数字 + 小写字母
+    if (hasNumber && hasLowercase && !hasUppercase && !hasSpecialChar) return 'pass';
+
+    // 数字 + 小写字母 + 大写字母
+    if (hasNumber && hasLowercase && hasUppercase && !hasSpecialChar) return 'ok';
+
+    // 数字 + 小写字母 + 大写字母 + 特殊字符
+    if (hasNumber && hasLowercase && hasUppercase && hasSpecialChar) return 'excellent';
+
+    return 'poor'; // 其他情况返回弱
   };
 
   const onFinish = (values: { username: string; password: string }) => {
@@ -65,6 +79,13 @@ const Login: React.FC = () => {
                     if (status === 'ok') {
                       return <div style={{ color: token.colorSuccess }}>密码强度：强</div>;
                     }
+                    if (status === 'excellent') {
+                      return (
+                        <div style={{ color: token.colorSuccess, fontWeight: 'bold' }}>
+                          密码强度：超强
+                        </div>
+                      );
+                    }
                     return <div style={{ color: token.colorError }}>密码强度：弱</div>;
                   },
                 }}
@@ -73,6 +94,14 @@ const Login: React.FC = () => {
                   {
                     required: true,
                     message: '请输入密码！',
+                  },
+                  {
+                    min: 6,
+                    message: '密码长度不能少于6位！',
+                  },
+                  {
+                    max: 8,
+                    message: '密码长度不能超过8位！',
                   },
                 ]}
               />

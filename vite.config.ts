@@ -37,7 +37,6 @@ export default defineConfig(({ mode }) => {
         deleteOriginFile: false, // 是否删除原始文件
       }),
     ],
-    // base: '/asp-xms-vite/',
     server: {
       port: 8000,
       open: true,
