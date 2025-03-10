@@ -11,7 +11,11 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
     plugins: [
-      react(),
+      react({
+        tsDecorators: true,
+        plugins: [['@swc/plugin-styled-components', {}]],
+        devTarget: 'es2022',
+      }),
       legacy({
         targets: ['defaults', 'not IE 11'],
       }),
