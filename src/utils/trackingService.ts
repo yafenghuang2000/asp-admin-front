@@ -51,47 +51,23 @@ class TrackingService {
   static async sendEvents(): Promise<void> {
     this.initialize();
     const events = await this.db.events.toArray();
+    console.log(events, 'events');
     if (events.length > 0) {
       try {
-        const response = await this.fetchWithTimeout('/api/track', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(events),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        // 使用 sendBeacon 发送数据
+        const success = navigator.sendBeacon(
+          '/api/user/track-event',
+          new Blob([JSON.stringify(events)], { type: 'application/json' }),
+        );
+        if (success) {
+          await this.db.events.clear(); // 发送成功后清空数据
+        } else {
+          throw new Error('Failed to send tracking data using sendBeacon');
         }
-
-        await this.db.events.clear(); // 发送成功后清空数据
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Failed to send tracking data:', error);
       }
-    }
-  }
-
-  // 带超时的 fetch 请求
-  private static async fetchWithTimeout(
-    url: string,
-    options: RequestInit,
-    timeout = 5000,
-  ): Promise<Response> {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-    try {
-      const response = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-      return response;
-    } catch (error) {
-      clearTimeout(timeoutId);
-      throw error;
     }
   }
 
