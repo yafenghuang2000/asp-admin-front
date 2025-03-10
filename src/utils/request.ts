@@ -1,6 +1,6 @@
 import request, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { notification } from 'antd';
-import { getCookie } from './cookies';
+import { getCookie } from './StorageValue';
 
 interface IResponseConfig<T> {
   url: string;

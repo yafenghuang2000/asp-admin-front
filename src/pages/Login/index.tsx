@@ -2,7 +2,7 @@ import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProConfigProvider, ProFormText } from '@ant-design/pro-components';
 import { theme } from 'antd';
-import { setCookie } from '@/utils/cookies';
+import { setCookie } from '@/utils/StorageValue';
 import TrackingService from '@/utils/trackingService';
 import { useGoHome } from '@/hooks/routerHooks';
 import './index.scss';

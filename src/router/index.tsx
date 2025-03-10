@@ -1,6 +1,6 @@
 import loadable from '@loadable/component';
 import { createBrowserRouter, redirect } from 'react-router-dom';
-import { getCookie } from '@/utils/cookies.ts';
+import { getCookie } from '@/utils/StorageValue';
 
 const LayoutHome = loadable(() => import('@/Layout'));
 const Home = loadable(() => import('@/pages/Home'));
