@@ -40,9 +40,9 @@ const List: React.FC = () => {
   return (
     <div className='list-container' onScroll={onScroll} ref={containerRef}>
       <div className='list-content'>
-        {data.map((item) => {
+        {data.map((item, index) => {
           return (
-            <div className='list-content-box' key={item}>
+            <div className='list-content-box' key={index + 1}>
               <div className='list-content-box-item'>{item}</div>
             </div>
           );
