@@ -2,11 +2,14 @@ import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProConfigProvider, ProFormText } from '@ant-design/pro-components';
 import { theme } from 'antd';
+import { setCookie } from '@/utils/cookies';
 import TrackingService from '@/utils/trackingService';
+import { useGoHome } from '@/hooks/routerHooks';
 import './index.scss';
 
 const Login: React.FC = () => {
   const { token } = theme.useToken();
+  const goHome = useGoHome();
 
   const getStatus = (value: string) => {
     if (value && value.length > 12) {
@@ -20,6 +23,12 @@ const Login: React.FC = () => {
 
   const onFinish = (values: { username: string; password: string }) => {
     console.log('Success:', values);
+    setCookie({
+      key: 'user',
+      value: values.username,
+      options: { expires: 7, path: '/', sameSite: 'Lax' },
+    });
+    goHome();
     TrackingService.trackEvent('click', { buttonId: 'submit-button', openId: values.username });
   };
 

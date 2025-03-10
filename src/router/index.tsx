@@ -1,11 +1,12 @@
 import loadable from '@loadable/component';
-import { createHashRouter, redirect } from 'react-router-dom';
+import { createBrowserRouter, redirect } from 'react-router-dom';
 import { getCookie } from '@/utils/cookies.ts';
 
 const LayoutHome = loadable(() => import('@/Layout'));
 const Home = loadable(() => import('@/pages/Home'));
 const Login = loadable(() => import('@/pages/Login'));
 const NotFoundPage = loadable(() => import('@/pages/NotFoundPage'));
+const List = loadable(() => import('@/pages/List'));
 
 const isUserAuthenticated = () => {
   const user = getCookie('user');
@@ -15,7 +16,7 @@ const isUserAuthenticated = () => {
   return null;
 };
 
-const routers = createHashRouter([
+const routers = createBrowserRouter([
   {
     path: '/',
     element: <LayoutHome />,
@@ -30,6 +31,10 @@ const routers = createHashRouter([
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/list',
+    element: <List />,
   },
   {
     path: '*',
