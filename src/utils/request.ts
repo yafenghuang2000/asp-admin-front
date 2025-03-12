@@ -1,6 +1,5 @@
 import request, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { notification } from 'antd';
-import { getCookie } from './StorageValue';
 
 interface IResponseConfig<T> {
   url: string;
@@ -10,7 +9,7 @@ interface IResponseConfig<T> {
 
 request.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = getCookie('token');
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
@@ -40,7 +39,7 @@ const parse = (res: AxiosResponse, params: { handleRaw: boolean }) => {
           placement: 'bottomRight',
           duration: 5000,
         });
-        window.location.reload();
+        window.location.href = '/login';
         return;
       } else {
         notification.open({
@@ -60,7 +59,7 @@ const parse = (res: AxiosResponse, params: { handleRaw: boolean }) => {
         placement: 'bottomRight',
         duration: 5000,
       });
-      window.location.reload();
+      window.location.href = '/login';
       break;
     case 404:
       notification.open({
