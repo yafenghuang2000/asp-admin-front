@@ -31,6 +31,7 @@ export const convertToMenuItems = (items: IRouterResponse[]): IMenuItem[] =>
       id: item.id,
       label: item.label,
       path: item.path,
-      children: item.children ? convertToMenuItems(item.children) : undefined,
+      children:
+        item.children && item.children.length > 0 ? convertToMenuItems(item.children) : undefined,
     };
   });

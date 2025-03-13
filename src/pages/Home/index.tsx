@@ -13,11 +13,25 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import { Button } from 'antd';
+import { addMenu } from '@/service/userService';
 import XmsHeader from '@/components/xms-header';
 import { BarChartdata, LineChartData, PieChartCOLORS, PieChartdata } from './data';
 import './index.scss';
 
 const Home: React.FC = () => {
+  const handelAddmens = async () => {
+    const res = await addMenu({
+      // id: '1', // 菜单ID
+      // label: '首页', // 菜单名称
+      // path: '/', // 菜单路径
+      id: 'menu3', // 菜单ID
+      label: 'submenu子菜单', // 菜单名称
+      path: '/submenu/list', // 菜单路径
+      parentId: 'menu2', // 父节点ID
+    });
+    console.log(res, 'res');
+  };
   return (
     <div className='home'>
       <XmsHeader title='首页' />
@@ -80,6 +94,10 @@ const Home: React.FC = () => {
           <Tooltip />
           <Legend />
         </PieChart>
+
+        <Button type='primary' onClick={handelAddmens}>
+          新增菜单
+        </Button>
       </div>
     </div>
   );

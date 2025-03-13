@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { IStoreProps } from '@/reducer/type';
 import userImg from '@/assets/useer.svg';
 import xmsImg from '@/assets/xmsImg.svg';
+import { getMenuList } from '@/service/userService';
 import { convertToMenuItems, IMenuItem } from './data';
 import './index.scss';
 
@@ -13,19 +14,21 @@ const { Header, Content, Sider } = Layout;
 
 const Home: React.FC = () => {
   const location = useLocation();
-  const routersData = useSelector((state: IStoreProps) => state.routersData);
+  // const routersData = useSelector((state: IStoreProps) => state.routersData);
   const userinfo = useSelector((state: IStoreProps) => state.userinfo);
 
   const [searchText, setSearchText] = useState<string>('');
   const [menuData, setmenuData] = useState<IMenuItem[]>([]);
 
   const getMenuData = async () => {
-    setmenuData(convertToMenuItems(routersData?.routerList || []));
+    const getMenuListRes = await getMenuList();
+    console.log(getMenuListRes, 'getMenuListRes');
+
+    setmenuData(convertToMenuItems(getMenuListRes || []));
   };
 
   useEffect(() => {
     getMenuData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formatMenuItems = (items: IMenuItem[]): MenuProps['items'] => {
