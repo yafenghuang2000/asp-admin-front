@@ -8,7 +8,7 @@ import { IStoreProps } from '@/reducer/type';
 import userImg from '@/assets/useer.svg';
 import xmsImg from '@/assets/xmsImg.svg';
 import { getMenuList } from '@/service/userService';
-import { convertToMenuItems, IMenuItem } from './data';
+import { convertToMenuItems, IMenuItem } from '@/utils/treeFunction.ts';
 import './index.scss';
 
 const { Header, Content, Sider } = Layout;
@@ -41,6 +41,7 @@ const Home: React.FC = () => {
       return {
         key: item.id,
         label: item.path ? <Link to={item.path}>{item.label}</Link> : item.label,
+        title: item.label,
         icon: item.icon,
         children: item.children ? formatMenuItems(item.children) : undefined,
       };
@@ -60,11 +61,12 @@ const Home: React.FC = () => {
     });
   };
 
-  const getSelectedKeys = () =>
-    routerState.routerList
-      .flatMap(getAllPaths)
+  const getSelectedKeys = () => {
+    return routerState.routerList
+      .flatMap((item) => getAllPaths(item as IMenuItem))
       .filter((p) => p.path === location.pathname)
       .map((p) => p.id);
+  };
 
   // 递归获取所有路径
   const getAllPaths = (item: IMenuItem): Array<{ id: string; path: string }> => {
@@ -94,7 +96,8 @@ const Home: React.FC = () => {
                 theme='light'
                 mode='inline'
                 selectedKeys={getSelectedKeys()}
-                items={formatMenuItems(filterMenu(routerState.routerList))}
+                // items={formatMenuItems(filterMenu(routerState.routerList))}
+                items={formatMenuItems(filterMenu(convertToMenuItems(routerState.routerList)))}
                 defaultOpenKeys={routerState.routerList.map((item) => item.id)}
               />
             </div>

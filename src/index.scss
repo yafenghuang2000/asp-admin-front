@@ -17,6 +17,7 @@ html,
 body {
   background: rgb(255 255 255 / 10%);
   height: 100vh;
+  overflow: hidden; /* 防止滚动条出现 */
 }
 
 #root {

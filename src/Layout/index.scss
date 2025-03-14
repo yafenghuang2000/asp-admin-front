@@ -1,4 +1,5 @@
 .asp-comprehension-home {
+  display: flex;
   height: 100%;
   width: 100%;
 
@@ -9,6 +10,7 @@
 
   &-menu {
     border-right: 1px solid #e9ebed;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -99,6 +101,8 @@
 
   &-content {
     background-color: rgb(255 255 255 / 10%);
+    box-sizing: border-box;
+    flex: 1;
     height: 100%;
     width: 100%;
   }
