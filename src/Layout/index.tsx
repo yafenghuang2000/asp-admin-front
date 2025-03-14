@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import type { MenuProps } from 'antd';
 import { Input, Layout, Menu } from 'antd';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setMenuData } from '@/reducer/routerModels';
 import { IStoreProps } from '@/reducer/type';
 import userImg from '@/assets/useer.svg';
 import xmsImg from '@/assets/xmsImg.svg';
@@ -14,21 +15,24 @@ const { Header, Content, Sider } = Layout;
 
 const Home: React.FC = () => {
   const location = useLocation();
-  // const routersData = useSelector((state: IStoreProps) => state.routersData);
+  const dispatch = useDispatch();
   const userinfo = useSelector((state: IStoreProps) => state.userinfo);
-
+  const routerState = useSelector((state: IStoreProps) => state.routersData);
   const [searchText, setSearchText] = useState<string>('');
-  const [menuData, setmenuData] = useState<IMenuItem[]>([]);
 
   const getMenuData = async () => {
-    const getMenuListRes = await getMenuList();
-    console.log(getMenuListRes, 'getMenuListRes');
-
-    setmenuData(convertToMenuItems(getMenuListRes || []));
+    try {
+      const getMenuListRes = await getMenuList();
+      const routerData = convertToMenuItems(getMenuListRes || []);
+      dispatch(setMenuData(routerData));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     getMenuData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formatMenuItems = (items: IMenuItem[]): MenuProps['items'] => {
@@ -57,7 +61,7 @@ const Home: React.FC = () => {
   };
 
   const getSelectedKeys = () =>
-    menuData
+    routerState.routerList
       .flatMap(getAllPaths)
       .filter((p) => p.path === location.pathname)
       .map((p) => p.id);
@@ -90,8 +94,8 @@ const Home: React.FC = () => {
                 theme='light'
                 mode='inline'
                 selectedKeys={getSelectedKeys()}
-                items={formatMenuItems(filterMenu(menuData))}
-                defaultOpenKeys={menuData.map((item) => item.id)}
+                items={formatMenuItems(filterMenu(routerState.routerList))}
+                defaultOpenKeys={routerState.routerList.map((item) => item.id)}
               />
             </div>
           </div>
