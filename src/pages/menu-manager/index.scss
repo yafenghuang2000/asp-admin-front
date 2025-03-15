@@ -11,7 +11,6 @@
     height: 48px;
     padding: 0 20px;
     user-select: none;
-    user-select: none;
 
     &-title {
       color: #1f2733;
@@ -82,6 +81,88 @@
         &-container {
           flex: 1;
           height: inherit;
+
+          &-header {
+            align-items: center;
+            border-bottom: 1px solid #e9ebed;
+            display: flex;
+            height: 50px;
+            justify-content: space-between;
+            padding-left: 20px;
+            width: 100%;
+
+            &-title {
+              color: #1f2733;
+              cursor: pointer;
+              font-size: 14px;
+              font-weight: 700;
+              margin-right: 12px;
+            }
+
+            &-buttons {
+              color: #1f2733;
+              display: flex;
+              font-size: 14px;
+            }
+          }
+
+          &-content {
+            //height: 273px;
+            padding: 15px 20px 20px;
+            width: 100%;
+
+            &-lable {
+              align-items: flex-start;
+              color: #929aa6;
+              display: flex;
+              flex-shrink: 0;
+              font-size: 14px;
+              height: 34px;
+              line-height: 34px;
+
+              .title {
+                width: 96px;
+              }
+
+              .content {
+                color: #1f2733;
+              }
+            }
+          }
+
+          &-submenus {
+            min-height: 200px;
+            padding: 0 20px;
+            width: 100%;
+
+            &-create {
+              align-items: center;
+              border-bottom: 1px solid #e9ebed;
+              color: #1f2733;
+              display: flex;
+              font-size: 14px;
+              height: 48px;
+              justify-content: space-between;
+            }
+
+            &-list {
+              display: flex;
+              flex-wrap: wrap;
+
+              &-item {
+                align-items: center;
+                background: #f6f6f6;
+                border: 1px solid #f6f6f6;
+                border-radius: 2px;
+                cursor: pointer;
+                display: flex;
+                height: 40px;
+                margin: 10px 10px 0 0;
+                padding: 0 8px;
+                width: 230px;
+              }
+            }
+          }
         }
       }
     }

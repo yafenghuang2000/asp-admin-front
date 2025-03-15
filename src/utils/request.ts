@@ -20,9 +20,19 @@ request.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+//
+// request.interceptors.response.use(
+//   (res) => {
+//     console.log(res);
+//   },
+//   (error) => {
+//     console.log(error.response.data, 'sadad');
+//   },
+// );
 
 const parse = (res: AxiosResponse, params: { handleRaw: boolean }) => {
   const { status, data } = res;
+  console.log(status, 'status', data);
   const { handleRaw } = params || {};
   switch (status) {
     case 200:
@@ -69,6 +79,15 @@ const parse = (res: AxiosResponse, params: { handleRaw: boolean }) => {
         placement: 'bottomRight',
       });
       break;
+    case 500:
+      notification.open({
+        type: 'error',
+        message: '提示',
+        description: data.message || '系统异常',
+        placement: 'bottomRight',
+        duration: 5000,
+      });
+      break;
     default:
       notification.open({
         type: 'error',
@@ -101,6 +120,7 @@ const post = async <T>(data: IResponseConfig<T>): Promise<T> => {
       url: data.url,
       data: data.data,
     });
+    console.log(response, 'response');
     const parsedParams = { handleRaw: !!data.handleRaw };
     return parse(response, parsedParams);
   } catch (error) {

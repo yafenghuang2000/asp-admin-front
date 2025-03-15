@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Button, Tree } from 'antd';
 import { getMenuList } from '@/service/userService';
 import { convertToMenuItems, IMenuItem } from '@/utils/treeFunction.ts';
+import { createMenu } from './data.ts';
 import './index.scss';
 const { DirectoryTree } = Tree;
 const MenuManager: React.FC = () => {
@@ -64,7 +65,68 @@ const MenuManager: React.FC = () => {
                 <DirectoryTree multiple draggable height={treeElementHeight} treeData={treeData} />
               </div>
             </div>
-            <div className='menu-container'></div>
+            <div className='menu-container'>
+              <div className='menu-container-header'>
+                <div className='menu-container-header-title'>XMS售后系统</div>
+                <div className='menu-container-header-buttons'>
+                  <Button type='link' icon={<EditOutlined />} style={{ color: '#000' }}>
+                    编辑
+                  </Button>
+                  <Button type='link' style={{ color: '#000' }} icon={<DeleteOutlined />}>
+                    删除
+                  </Button>
+                </div>
+              </div>
+              <div className='menu-container-content'>
+                <div className='menu-container-content-lable'>
+                  <div className='title'>菜单名称</div>
+                  <div className='content'>content</div>
+                </div>
+                <div className='menu-container-content-lable'>
+                  <div className='title'>菜单编码</div>
+                  <div className='content'>content</div>
+                </div>
+                <div className='menu-container-content-lable'>
+                  <div className='title'>菜单类型</div>
+                  <div className='content'>content</div>
+                </div>
+                <div className='menu-container-content-lable'>
+                  <div className='title'>菜单图标</div>
+                  <div className='content'>content</div>
+                </div>
+                <div className='menu-container-content-lable'>
+                  <div className='title'>菜单地址</div>
+                  <div className='content'>content</div>
+                </div>
+                <div className='menu-container-content-lable'>
+                  {' '}
+                  <div className='title'>菜单排序</div>
+                  <div className='content'>content</div>
+                </div>
+                <div className='menu-container-content-lable'>
+                  {' '}
+                  <div className='title'>备注信息</div>
+                  <div className='content'>content</div>
+                </div>
+              </div>
+              <div className='menu-container-submenus'>
+                <div className='menu-container-submenus-create'>
+                  <div className='title'>菜单信息</div>
+                  <Button type='link' icon={<DeleteOutlined />} style={{ color: '#000' }}>
+                    创建
+                  </Button>
+                </div>
+                <div className='menu-container-submenus-list'>
+                  {createMenu().map((item) => {
+                    return (
+                      <div className='menu-container-submenus-list-item' key={item.id}>
+                        {item.title}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

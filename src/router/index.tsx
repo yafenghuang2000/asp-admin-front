@@ -7,6 +7,7 @@ const Home = loadable(() => import('@/pages/Home'));
 const Login = loadable(() => import('@/pages/Login'));
 const NotFoundPage = loadable(() => import('@/pages/NotFoundPage'));
 const List = loadable(() => import('@/pages/List'));
+const MenuManagers = loadable(() => import('@/pages/menu-manager'));
 
 const isUserAuthenticated = () => {
   const user = getCookie('user');
@@ -25,6 +26,10 @@ const routers = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
+      },
+      {
+        path: '/menu-manager/menu',
+        element: <MenuManagers />,
       },
     ],
   },
