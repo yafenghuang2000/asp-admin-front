@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Tree } from 'antd';
+import { Button, Tree, Empty } from 'antd';
 import type { TreeProps } from 'antd';
 import { getMenuList } from '@/service/userService';
 import { convertToMenuItems, IMenuItem } from '@/utils/treeFunction.ts';
-import { createMenu, ISOnSelectNodeProps } from './data.ts';
+import { ISOnSelectNodeProps, ISMenuDetail } from './data.ts';
 import './index.scss';
 
 const { DirectoryTree } = Tree;
@@ -13,7 +13,9 @@ const MenuManager: React.FC = () => {
   const [treeData, setteeData] = useState<IMenuItem[]>([]);
   const [treeElementHeight, setTreeElementHeight] = useState(0);
   const treeRef = useRef<HTMLDivElement>(null);
-  const [menuDetail, setMenuDetail] = useState<IMenuItem | null>(null);
+  const [menuDetail, setMenuDetail] = useState<ISMenuDetail | null>(null);
+  //菜单列表
+  const [menuList, setMenuList] = useState<ISMenuDetail[]>([]);
 
   const updateTreeHeight = () => {
     if (treeRef.current) {
@@ -47,13 +49,28 @@ const MenuManager: React.FC = () => {
   }, []);
   const onSelect: TreeProps['onSelect'] = (_, info) => {
     const node = info.node as unknown as ISOnSelectNodeProps;
+    console.log(node, 'node');
+    let type = null;
+    if (node.children && Array.isArray(node.children) && node.children.length > 0) {
+      type = '目录';
+    }
+
+    if (!node.children) {
+      type = '菜单';
+    }
+
     setMenuDetail({
-      id: node.id,
       key: node.key,
       title: node.title,
-      label: node.title,
       path: node.path,
+      code: null,
+      type,
+      icon: null,
+      sort: node.id,
+      remark: null,
     });
+
+    setMenuList(node.children || []);
   };
   return (
     <div className='menuManager'>
@@ -69,7 +86,7 @@ const MenuManager: React.FC = () => {
                 <SearchOutlined style={{ fontStyle: '14px' }} />
               </div>
               <div className='menu-item-create'>
-                <Button type='primary' icon={<PlusOutlined />} style={{ width: '100%' }}>
+                <Button type='default' icon={<PlusOutlined />} style={{ width: '100%' }}>
                   创建系统
                 </Button>
               </div>
@@ -103,15 +120,15 @@ const MenuManager: React.FC = () => {
                 </div>
                 <div className='menu-container-content-lable'>
                   <div className='title'>菜单编码</div>
-                  <div className='content'>content</div>
+                  <div className='content'>{menuDetail?.code ?? '--'}</div>
                 </div>
                 <div className='menu-container-content-lable'>
                   <div className='title'>菜单类型</div>
-                  <div className='content'>content</div>
+                  <div className='content'>{menuDetail?.type ?? '--'}</div>
                 </div>
                 <div className='menu-container-content-lable'>
                   <div className='title'>菜单图标</div>
-                  <div className='content'>content</div>
+                  <div className='content'>{menuDetail?.icon ?? '--'}</div>
                 </div>
                 <div className='menu-container-content-lable'>
                   <div className='title'>菜单地址</div>
@@ -120,12 +137,12 @@ const MenuManager: React.FC = () => {
                 <div className='menu-container-content-lable'>
                   {' '}
                   <div className='title'>菜单排序</div>
-                  <div className='content'>content</div>
+                  <div className='content'>{menuDetail?.sort ?? '--'}</div>
                 </div>
                 <div className='menu-container-content-lable'>
                   {' '}
                   <div className='title'>备注信息</div>
-                  <div className='content'>content</div>
+                  <div className='content'>{menuDetail?.remark ?? '--'}</div>
                 </div>
               </div>
               <div className='menu-container-submenus'>
@@ -136,13 +153,27 @@ const MenuManager: React.FC = () => {
                   </Button>
                 </div>
                 <div className='menu-container-submenus-list'>
-                  {createMenu().map((item) => {
-                    return (
-                      <div className='menu-container-submenus-list-item' key={item.id}>
-                        {item.title}
-                      </div>
-                    );
-                  })}
+                  {menuList.length <= 0 ? (
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Empty />
+                    </div>
+                  ) : (
+                    menuList.map((item) => {
+                      return (
+                        <div className='menu-container-submenus-list-item' key={item.key}>
+                          {item.title}
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </div>
