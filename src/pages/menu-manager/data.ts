@@ -1,12 +1,18 @@
-export const createMenu = (): Array<{ id: number; title: string }> => {
-  const list = [];
-  for (let i = 0; i < 20; i++) {
-    list.push({ id: i + 1, title: `菜单名称${i + 1}` });
-  }
-  return list;
+export const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
 };
 
 export interface ISOnSelectNodeProps {
+  icon: string | null;
+  remark: string | null;
+  code: string | null;
   id: string;
   key: string;
   title: string;
@@ -16,7 +22,7 @@ export interface ISOnSelectNodeProps {
 
 export interface ISMenuDetail {
   key: string;
-  title: string;
+  title: string | null;
   path?: string;
   code: string | null;
   type: string | null;

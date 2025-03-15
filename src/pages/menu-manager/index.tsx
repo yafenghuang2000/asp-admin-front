@@ -4,6 +4,7 @@ import { Button, Tree, Empty } from 'antd';
 import type { TreeProps } from 'antd';
 import { getMenuList } from '@/service/userService';
 import { convertToMenuItems, IMenuItem } from '@/utils/treeFunction.ts';
+import CreateMenu from './createMenu.tsx';
 import { ISOnSelectNodeProps, ISMenuDetail } from './data.ts';
 import './index.scss';
 
@@ -14,8 +15,9 @@ const MenuManager: React.FC = () => {
   const [treeElementHeight, setTreeElementHeight] = useState(0);
   const treeRef = useRef<HTMLDivElement>(null);
   const [menuDetail, setMenuDetail] = useState<ISMenuDetail | null>(null);
-  //菜单列表
   const [menuList, setMenuList] = useState<ISMenuDetail[]>([]);
+  const [open, setOpen] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
   const updateTreeHeight = () => {
     if (treeRef.current) {
@@ -38,7 +40,33 @@ const MenuManager: React.FC = () => {
   const getMenuAll = async (): Promise<void> => {
     try {
       const result = await getMenuList();
+      const menuData = convertToMenuItems(result || []);
       setteeData(convertToMenuItems(result || []));
+      setSelectedKeys([menuData?.[0]?.id ?? '']);
+
+      let type = null;
+      if (
+        menuData[0].children &&
+        Array.isArray(menuData[0].children) &&
+        menuData[0].children.length > 0
+      ) {
+        type = '目录';
+      }
+
+      if (!menuData[0].children) {
+        type = '菜单';
+      }
+
+      setMenuDetail({
+        key: menuData?.[0].key,
+        title: menuData?.[0].title ?? null, // 提供默认值
+        path: menuData?.[0].path,
+        code: menuData?.[0].code ?? null,
+        type,
+        icon: null,
+        sort: menuData?.[0].id,
+        remark: menuData?.[0].remark ?? null,
+      });
     } catch (e) {
       console.log(e);
     }
@@ -49,7 +77,7 @@ const MenuManager: React.FC = () => {
   }, []);
   const onSelect: TreeProps['onSelect'] = (_, info) => {
     const node = info.node as unknown as ISOnSelectNodeProps;
-    console.log(node, 'node');
+
     let type = null;
     if (node.children && Array.isArray(node.children) && node.children.length > 0) {
       type = '目录';
@@ -59,17 +87,17 @@ const MenuManager: React.FC = () => {
       type = '菜单';
     }
 
+    setSelectedKeys([node.id]);
     setMenuDetail({
       key: node.key,
       title: node.title,
       path: node.path,
-      code: null,
+      code: node.code,
       type,
-      icon: null,
+      icon: node.icon,
       sort: node.id,
-      remark: null,
+      remark: node.remark,
     });
-
     setMenuList(node.children || []);
   };
   return (
@@ -96,6 +124,7 @@ const MenuManager: React.FC = () => {
                   draggable
                   showLine
                   height={treeElementHeight}
+                  selectedKeys={selectedKeys}
                   treeData={treeData}
                   onSelect={onSelect}
                 />
@@ -148,7 +177,14 @@ const MenuManager: React.FC = () => {
               <div className='menu-container-submenus'>
                 <div className='menu-container-submenus-create'>
                   <div className='title'>菜单信息</div>
-                  <Button type='link' icon={<DeleteOutlined />} style={{ color: '#000' }}>
+                  <Button
+                    type='link'
+                    icon={<PlusOutlined />}
+                    style={{ color: '#000' }}
+                    onClick={() => {
+                      setOpen(true);
+                    }}
+                  >
                     创建
                   </Button>
                 </div>
@@ -180,6 +216,8 @@ const MenuManager: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {open && <CreateMenu open={open} setOpen={setOpen} />}
     </div>
   );
 };

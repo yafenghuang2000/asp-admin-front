@@ -12,8 +12,10 @@ export interface IMenuItem {
   key: string;
   id: string;
   title?: string;
+  remark?: string | null;
+  code?: string | null;
   label: string;
-  icon?: React.ReactNode;
+  icon?: React.ReactNode | null;
   path?: string;
   children?: IMenuItem[];
 }
@@ -21,7 +23,6 @@ export const convertToMenuItems = (items: IRouterResponse[]): IMenuItem[] =>
   items.map((item) => ({
     id: item.id,
     key: item.id,
-    // key: item.id || `key-${item.id}`,
     title: item.label,
     label: item.label,
     path: item.path,
