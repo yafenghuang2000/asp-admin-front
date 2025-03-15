@@ -1,15 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Button, Tree } from 'antd';
+import type { TreeProps } from 'antd';
 import { getMenuList } from '@/service/userService';
 import { convertToMenuItems, IMenuItem } from '@/utils/treeFunction.ts';
-import { createMenu } from './data.ts';
+import { createMenu, ISOnSelectNodeProps } from './data.ts';
 import './index.scss';
+
 const { DirectoryTree } = Tree;
+
 const MenuManager: React.FC = () => {
   const [treeData, setteeData] = useState<IMenuItem[]>([]);
   const [treeElementHeight, setTreeElementHeight] = useState(0);
   const treeRef = useRef<HTMLDivElement>(null);
+  const [menuDetail, setMenuDetail] = useState<IMenuItem | null>(null);
 
   const updateTreeHeight = () => {
     if (treeRef.current) {
@@ -29,7 +33,7 @@ const MenuManager: React.FC = () => {
     };
   }, [treeData]);
 
-  const getMenuAll = async () => {
+  const getMenuAll = async (): Promise<void> => {
     try {
       const result = await getMenuList();
       setteeData(convertToMenuItems(result || []));
@@ -38,11 +42,19 @@ const MenuManager: React.FC = () => {
     }
   };
 
-  console.log(treeData, 'treeData');
-
   useEffect(() => {
     void getMenuAll();
   }, []);
+  const onSelect: TreeProps['onSelect'] = (_, info) => {
+    const node = info.node as unknown as ISOnSelectNodeProps;
+    setMenuDetail({
+      id: node.id,
+      key: node.key,
+      title: node.title,
+      label: node.title,
+      path: node.path,
+    });
+  };
   return (
     <div className='menuManager'>
       <div className='menuManager-header'>
@@ -62,7 +74,14 @@ const MenuManager: React.FC = () => {
                 </Button>
               </div>
               <div className='menu-item-list' ref={treeRef}>
-                <DirectoryTree multiple draggable height={treeElementHeight} treeData={treeData} />
+                <DirectoryTree
+                  multiple
+                  draggable
+                  showLine
+                  height={treeElementHeight}
+                  treeData={treeData}
+                  onSelect={onSelect}
+                />
               </div>
             </div>
             <div className='menu-container'>
@@ -80,7 +99,7 @@ const MenuManager: React.FC = () => {
               <div className='menu-container-content'>
                 <div className='menu-container-content-lable'>
                   <div className='title'>菜单名称</div>
-                  <div className='content'>content</div>
+                  <div className='content'>{menuDetail?.title ?? '--'}</div>
                 </div>
                 <div className='menu-container-content-lable'>
                   <div className='title'>菜单编码</div>
@@ -96,7 +115,7 @@ const MenuManager: React.FC = () => {
                 </div>
                 <div className='menu-container-content-lable'>
                   <div className='title'>菜单地址</div>
-                  <div className='content'>content</div>
+                  <div className='content'>{menuDetail?.path ?? '--'}</div>
                 </div>
                 <div className='menu-container-content-lable'>
                   {' '}

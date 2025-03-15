@@ -9,8 +9,9 @@ export interface IRouterResponse {
 }
 
 export interface IMenuItem {
+  key: string;
   id: string;
-  title: string;
+  title?: string;
   label: string;
   icon?: React.ReactNode;
   path?: string;
@@ -20,6 +21,7 @@ export const convertToMenuItems = (items: IRouterResponse[]): IMenuItem[] =>
   items.map((item) => ({
     id: item.id,
     key: item.id,
+    // key: item.id || `key-${item.id}`,
     title: item.label,
     label: item.label,
     path: item.path,

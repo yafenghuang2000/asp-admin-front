@@ -5,3 +5,10 @@ export const createMenu = (): Array<{ id: number; title: string }> => {
   }
   return list;
 };
+
+export interface ISOnSelectNodeProps {
+  id: string;
+  key: string;
+  title: string;
+  path: string;
+}
