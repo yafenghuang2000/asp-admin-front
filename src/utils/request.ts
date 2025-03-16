@@ -32,7 +32,7 @@ request.interceptors.request.use(
 
 const parse = (res: AxiosResponse, params: { handleRaw: boolean }) => {
   const { status, data } = res;
-  console.log(status, 'status', data);
+
   const { handleRaw } = params || {};
   switch (status) {
     case 200:

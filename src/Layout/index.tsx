@@ -8,7 +8,7 @@ import { IStoreProps } from '@/reducer/type';
 import userImg from '@/assets/useer.svg';
 import xmsImg from '@/assets/xmsImg.svg';
 import { getMenuList } from '@/service/userService';
-import { convertToMenuItems, IMenuItem } from '@/utils/treeFunction.ts';
+import { convertToMenuItems, IMenuItem } from './data';
 import './index.scss';
 
 const { Header, Content, Sider } = Layout;
@@ -40,8 +40,8 @@ const Home: React.FC = () => {
     return items.map((item) => {
       return {
         key: item.id,
-        label: item.path ? <Link to={item.path}>{item.label}</Link> : item.label,
-        title: item.label,
+        label: item.path ? <Link to={item.path}>{item.title}</Link> : item.title,
+        title: item.title,
         icon: item.icon,
         children: item.children ? formatMenuItems(item.children) : undefined,
       };
@@ -96,8 +96,9 @@ const Home: React.FC = () => {
                 theme='light'
                 mode='inline'
                 selectedKeys={getSelectedKeys()}
-                // items={formatMenuItems(filterMenu(routerState.routerList))}
-                items={formatMenuItems(filterMenu(convertToMenuItems(routerState.routerList)))}
+                items={formatMenuItems(
+                  filterMenu(convertToMenuItems(routerState.routerList as IMenuItem[])),
+                )}
                 defaultOpenKeys={routerState.routerList.map((item) => item.id)}
               />
             </div>
