@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -9,24 +11,53 @@ export const formItemLayout = {
   },
 };
 
-export interface ISOnSelectNodeProps {
-  icon: string | null;
-  remark: string | null;
-  code: string | null;
-  id: string;
-  key: string;
-  title: string;
-  path: string;
-  children?: Array<ISMenuDetail> | null;
-}
+export const titleConfig = [
+  {
+    id: 'createSys',
+    title: '创建系统',
+  },
+  {
+    id: 'editSys',
+    title: '编辑系统',
+  },
+  {
+    id: 'createMenu',
+    title: '创建菜单',
+  },
+  {
+    id: 'editMenu',
+    title: '编辑菜单',
+  },
+];
 
 export interface ISMenuDetail {
+  id?: string;
   key: string;
-  title: string | null;
-  path?: string;
-  code: string | null;
-  type: string | null;
-  icon: string | null;
-  sort: string | number | null;
-  remark: string | null;
+  title: string;
+  code: string;
+  path: string;
+  type: string;
+  icon?: React.ReactNode | null;
+  sortOrder: number;
+  description?: string | null;
+  remark?: string | null;
+  children?: Array<ISMenuDetail> | undefined;
 }
+
+export const convertToMenuItems = (items: ISMenuDetail[]): ISMenuDetail[] => {
+  return items.map((item) => {
+    return {
+      id: item.id,
+      key: item.key,
+      title: item.title,
+      code: item.code,
+      path: item.path,
+      type: item.type,
+      icon: item.icon,
+      sortOrder: item.sortOrder,
+      description: item.description,
+      remark: item.remark,
+      children: item.children?.length ? convertToMenuItems(item.children) : undefined,
+    };
+  });
+};

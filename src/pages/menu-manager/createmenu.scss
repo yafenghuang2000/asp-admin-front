@@ -1,4 +1,17 @@
-.creature {
-  height: 100%;
-  width: 100%;
+.creature-drawer {
+  .creature {
+    height: 100%;
+    width: 100%;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .footer-button {
+    margin: 0 6px;
+    width: 80px;
+  }
 }

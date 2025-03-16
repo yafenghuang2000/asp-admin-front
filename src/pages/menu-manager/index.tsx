@@ -3,20 +3,20 @@ import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant
 import { Button, Tree, Empty } from 'antd';
 import type { TreeProps } from 'antd';
 import { getMenuList } from '@/service/userService';
-import { convertToMenuItems, IMenuItem } from '@/utils/treeFunction.ts';
 import CreateMenu from './createMenu.tsx';
-import { ISOnSelectNodeProps, ISMenuDetail } from './data.ts';
+import { ISMenuDetail, convertToMenuItems } from './data.ts';
 import './index.scss';
 
 const { DirectoryTree } = Tree;
 
 const MenuManager: React.FC = () => {
-  const [treeData, setteeData] = useState<IMenuItem[]>([]);
+  const [treeData, setteeData] = useState<ISMenuDetail[]>([]);
   const [treeElementHeight, setTreeElementHeight] = useState(0);
   const treeRef = useRef<HTMLDivElement>(null);
   const [menuDetail, setMenuDetail] = useState<ISMenuDetail | null>(null);
   const [menuList, setMenuList] = useState<ISMenuDetail[]>([]);
   const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState<string>('');
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
   const updateTreeHeight = () => {
@@ -44,27 +44,15 @@ const MenuManager: React.FC = () => {
       setteeData(convertToMenuItems(result || []));
       setSelectedKeys([menuData?.[0]?.id ?? '']);
 
-      let type = null;
-      if (
-        menuData[0].children &&
-        Array.isArray(menuData[0].children) &&
-        menuData[0].children.length > 0
-      ) {
-        type = '目录';
-      }
-
-      if (!menuData[0].children) {
-        type = '菜单';
-      }
-
       setMenuDetail({
+        id: menuData?.[0].id,
         key: menuData?.[0].key,
         title: menuData?.[0].title ?? null, // 提供默认值
         path: menuData?.[0].path,
         code: menuData?.[0].code ?? null,
-        type,
+        type: menuData[0].type,
         icon: null,
-        sort: menuData?.[0].id,
+        sortOrder: menuData?.[0].sortOrder || 0,
         remark: menuData?.[0].remark ?? null,
       });
     } catch (e) {
@@ -76,26 +64,18 @@ const MenuManager: React.FC = () => {
     void getMenuAll();
   }, []);
   const onSelect: TreeProps['onSelect'] = (_, info) => {
-    const node = info.node as unknown as ISOnSelectNodeProps;
+    const node = info.node as unknown as ISMenuDetail;
 
-    let type = null;
-    if (node.children && Array.isArray(node.children) && node.children.length > 0) {
-      type = '目录';
-    }
-
-    if (!node.children) {
-      type = '菜单';
-    }
-
-    setSelectedKeys([node.id]);
+    setSelectedKeys([node.id ?? '']);
     setMenuDetail({
+      id: node.id,
       key: node.key,
       title: node.title,
       path: node.path,
       code: node.code,
-      type,
+      type: node.type,
       icon: node.icon,
-      sort: node.id,
+      sortOrder: node.sortOrder,
       remark: node.remark,
     });
     setMenuList(node.children || []);
@@ -114,7 +94,15 @@ const MenuManager: React.FC = () => {
                 <SearchOutlined style={{ fontStyle: '14px' }} />
               </div>
               <div className='menu-item-create'>
-                <Button type='default' icon={<PlusOutlined />} style={{ width: '100%' }}>
+                <Button
+                  type='default'
+                  icon={<PlusOutlined />}
+                  style={{ width: '100%' }}
+                  onClick={() => {
+                    setOpen(true);
+                    setTitle('createSys');
+                  }}
+                >
                   创建系统
                 </Button>
               </div>
@@ -166,7 +154,7 @@ const MenuManager: React.FC = () => {
                 <div className='menu-container-content-lable'>
                   {' '}
                   <div className='title'>菜单排序</div>
-                  <div className='content'>{menuDetail?.sort ?? '--'}</div>
+                  <div className='content'>{menuDetail?.sortOrder ?? '--'}</div>
                 </div>
                 <div className='menu-container-content-lable'>
                   {' '}
@@ -183,6 +171,7 @@ const MenuManager: React.FC = () => {
                     style={{ color: '#000' }}
                     onClick={() => {
                       setOpen(true);
+                      setTitle('createMenu');
                     }}
                   >
                     创建
@@ -217,7 +206,15 @@ const MenuManager: React.FC = () => {
         </div>
       </div>
 
-      {open && <CreateMenu open={open} setOpen={setOpen} />}
+      {open && (
+        <CreateMenu
+          open={open}
+          setOpen={setOpen}
+          title={title}
+          menuDetail={menuDetail}
+          getMenuAll={getMenuAll}
+        />
+      )}
     </div>
   );
 };

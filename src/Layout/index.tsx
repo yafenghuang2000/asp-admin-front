@@ -20,7 +20,7 @@ const Home: React.FC = () => {
   const routerState = useSelector((state: IStoreProps) => state.routersData);
   const [searchText, setSearchText] = useState<string>('');
 
-  const getMenuData = async () => {
+  const getMenuData = async (): Promise<void> => {
     try {
       const getMenuListRes = await getMenuList();
       const routerData = convertToMenuItems(getMenuListRes || []);
@@ -31,7 +31,7 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    getMenuData();
+    void getMenuData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

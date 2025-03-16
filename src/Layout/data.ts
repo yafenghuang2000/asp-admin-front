@@ -1,37 +1,26 @@
-import React from 'react';
 export interface IMenuItem {
   id: string;
-  label: string;
-  icon?: React.ReactNode;
-  path?: string;
-  children?: IMenuItem[];
+  key: string;
+  title: string;
+  code: string;
+  path: string;
+  icon?: React.ReactNode | null;
+  sortOrder: number;
+  children?: Array<IMenuItem> | undefined;
 }
 
-export interface IUserinfoResponse {
-  id: number;
-  name: string;
-  age: number;
-}
-
-export interface IUuserParams {
-  username?: string;
-}
-
-export interface IRouterResponse {
-  // 根据实际情况定义字段
-  id: string;
-  label: string;
-  path?: string;
-  children?: IRouterResponse[];
-}
-
-export const convertToMenuItems = (items: IRouterResponse[]): IMenuItem[] =>
-  items.map((item) => {
+export const convertToMenuItems = (item: IMenuItem[]): IMenuItem[] => {
+  return item.map((item) => {
     return {
       id: item.id,
-      label: item.label,
+      key: item.key,
+      title: item.title,
+      code: item.code,
       path: item.path,
+      icon: item.icon,
+      sortOrder: item.sortOrder,
       children:
         item.children && item.children.length > 0 ? convertToMenuItems(item.children) : undefined,
     };
   });
+};

@@ -5,6 +5,7 @@ export interface IRouterResponse {
   id: string;
   label: string;
   path?: string;
+  sortOrder?: number;
   children?: IRouterResponse[];
 }
 
@@ -18,13 +19,15 @@ export interface IMenuItem {
   icon?: React.ReactNode | null;
   path?: string;
   children?: IMenuItem[];
+  sortOrder?: number;
 }
-export const convertToMenuItems = (items: IRouterResponse[]): IMenuItem[] =>
+export const convertToMenuItems = (items: Array<IRouterResponse>): IMenuItem[] =>
   items.map((item) => ({
     id: item.id,
     key: item.id,
     title: item.label,
     label: item.label,
+    sortOrder: item.sortOrder || 0,
     path: item.path,
     children: item.children?.length ? convertToMenuItems(item.children) : undefined,
   }));
