@@ -45,15 +45,15 @@ const MenuManager: React.FC = () => {
       setSelectedKeys([menuData?.[0]?.id ?? '']);
 
       setMenuDetail({
-        id: menuData?.[0].id,
-        key: menuData?.[0].key,
-        title: menuData?.[0].title ?? null, // 提供默认值
-        path: menuData?.[0].path,
-        code: menuData?.[0].code ?? null,
-        type: menuData[0].type,
-        icon: null,
-        sortOrder: menuData?.[0].sortOrder || 0,
-        remark: menuData?.[0].remark ?? null,
+        id: menuData?.[0]?.id,
+        key: menuData?.[0]?.key,
+        title: menuData?.[0]?.title ?? null, // 提供默认值
+        path: menuData?.[0]?.path,
+        code: menuData?.[0]?.code ?? null,
+        type: menuData[0]?.type,
+        icon: menuData?.[0]?.icon,
+        sortOrder: menuData?.[0]?.sortOrder || 0,
+        remark: menuData?.[0]?.remark ?? null,
       });
     } catch (e) {
       console.log(e);

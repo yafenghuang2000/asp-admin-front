@@ -37,29 +37,20 @@ const CreateMenu: React.FC<ISCreateMenuProps> = (props) => {
     try {
       setSaveLoading(true);
       const values = await form.validateFields();
-      const params = {};
-      if (['createSys', 'editSys'].includes(title)) {
-        Object.assign(params, {
-          id: values.id,
-          title: values.title,
-          code: values.code,
-          path: values.path,
-          description: values.description,
-          remark: values.remark,
-        });
-      }
+      const params = {
+        id: values.id,
+        title: values.title,
+        code: values.code,
+        path: values.path,
+        type: values.type,
+        description: values.description,
+        remark: values.remark,
+        sortOrder: values.sortOrder || 0,
+      };
 
       if (['createMenu', 'editMenu'].includes(title)) {
         Object.assign(params, {
-          id: values.id,
-          title: values.title,
-          code: values.code,
-          path: values.path,
-          type: values.type,
-          description: values.description,
-          remark: values.remark,
           parentId: menuDetail?.id,
-          sortOrder: values.sortOrder || 0,
         });
       }
       console.log(params, 'menuDetail', menuDetail);
