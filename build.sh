@@ -22,11 +22,23 @@ echo "当前时间: ${CURRENT_TIME}"
 export IMAGE_NAME="${DOCKER_USERNAME}/${REPO_NAME}-${ENV}:${ENV}-${CURRENT_TIME}"
 echo "镜像名称: ${IMAGE_NAME}"
 
+
+# 手动输入 DockerHub 账户和密码
+read -p "请输入 DockerHub 账户: " DOCKER_USER
+read -p "请输入 DockerHub 密码: " DOCKER_PASSWORD
+
 # 登录 DockerHub
-echo "5820@Feng" | docker login -u yafenghuang2000@gmail.com --password-stdin || {
+echo "登录 DockerHub..."
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin || {
   echo "DockerHub 登录失败"
   exit 1
 }
+
+# # 登录 DockerHub
+# echo "5820@Feng" | docker login -u yafenghuang2000@gmail.com --password-stdin || {
+#   echo "DockerHub 登录失败"
+#   exit 1
+# }
 
 # 清理构建缓存
 docker builder prune
