@@ -9,6 +9,7 @@ import viteCompression from 'vite-plugin-compression';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+
   return {
     plugins: [
       react({
@@ -46,7 +47,7 @@ export default defineConfig(({ mode }) => {
       strict: true,
       proxy: {
         '/api': {
-          target: 'http://localhost:9999',
+          target: env.VITE_APP_BASE_API,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
