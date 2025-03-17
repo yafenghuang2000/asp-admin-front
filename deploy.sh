@@ -2,10 +2,10 @@
 
 # 设置默认值
 IMAGE_NAME=${1:-"yafenghuang/asp-xms-vite:production"}  # 从命令行参数中获取镜像名称，默认为 yafenghuang/asp-xms-vite:production
+REMOTE_PASSWORD="5820@Feng"  # 远程服务器密码
 REMOTE_USER="root"  # 远程服务器用户名
 REMOTE_HOST="175.178.50.233"  # 腾讯云服务器地址
 REMOTE_PORT=22  # 远程服务器 SSH 端口
-REMOTE_PASSWORD="5820@Feng"  # 远程服务器密码
 
 # 检查是否提供了镜像名称
 if [ -z "$IMAGE_NAME" ]; then

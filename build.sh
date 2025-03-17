@@ -54,9 +54,29 @@ docker pull "${IMAGE_NAME}" || {
 
 echo "构建并推送 ${IMAGE_NAME} 镜像完成"
 
-## 运行容器
-# 本地部署访问执行 run.sh
-# 服务器部署访问执行 deploy.sh
-# ./run.sh "${IMAGE_NAME}"
-# ./run.sh "${IMAGE_NAME}"
-./deploy.sh "${IMAGE_NAME}"
+# 选择部署方式
+echo "请选择部署方式："
+echo "1) 本地部署"
+echo "2) 服务器部署"
+read -p "请输入数字 (1 或 2): " DEPLOY_CHOICE
+
+# 如果用户未输入，则默认选择 1
+if [[ -z $DEPLOY_CHOICE ]]; then
+  DEPLOY_CHOICE=1
+  echo "未选择，默认执行本地部署..."
+fi
+
+case $DEPLOY_CHOICE in
+  1)
+    echo "执行本地部署..."
+    ./run.sh "${IMAGE_NAME}"
+    ;;
+  2)
+    echo "执行服务器部署..."
+    ./deploy.sh "${IMAGE_NAME}"
+    ;;
+  *)
+    echo "无效的选择，退出脚本"
+    exit 1
+    ;;
+esac
