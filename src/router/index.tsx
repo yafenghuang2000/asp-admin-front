@@ -3,7 +3,7 @@ import { createBrowserRouter, redirect } from 'react-router-dom';
 import { getCookie } from '@/utils/StorageValue';
 
 const LayoutHome = loadable(() => import('@/Layout'));
-// const Home = loadable(() => import('@/pages/Home'));
+const Home = loadable(() => import('@/pages/Home'));
 const Login = loadable(() => import('@/pages/Login'));
 const NotFoundPage = loadable(() => import('@/pages/NotFoundPage'));
 const List = loadable(() => import('@/pages/List'));
@@ -25,7 +25,7 @@ const routers = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <MenuManagers />,
+        element: <Home />,
       },
       {
         path: '/menu-manager/menu',

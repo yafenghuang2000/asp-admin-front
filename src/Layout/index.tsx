@@ -24,6 +24,7 @@ const Home: React.FC = () => {
     try {
       const getMenuListRes = await getMenuList();
       const routerData = convertToMenuItems(getMenuListRes || []);
+
       dispatch(setMenuData(routerData));
     } catch (error) {
       console.log(error);
@@ -40,7 +41,13 @@ const Home: React.FC = () => {
     return items.map((item) => {
       return {
         key: item.id,
-        label: item.path ? <Link to={item.path}>{item.title}</Link> : item.title,
+        label: item.children ? (
+          item.title
+        ) : item.path ? (
+          <Link to={item.path}>{item.title}</Link>
+        ) : (
+          item.title
+        ),
         title: item.title,
         icon: item.icon,
         children: item.children ? formatMenuItems(item.children) : undefined,
