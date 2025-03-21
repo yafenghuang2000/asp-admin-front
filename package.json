@@ -22,7 +22,6 @@
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
     "@ant-design/pro-components": "^2.8.6",
-    "@loadable/component": "^5.16.4",
     "@reduxjs/toolkit": "^2.6.0",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.13.9",

@@ -1,13 +1,14 @@
-import loadable from '@loadable/component';
+import { lazy } from 'react';
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import { getCookie } from '@/utils/StorageValue';
 
-const LayoutHome = loadable(() => import('@/Layout'));
-// const Home = loadable(() => import('@/pages/Home'));
-const Login = loadable(() => import('@/pages/Login'));
-const NotFoundPage = loadable(() => import('@/pages/NotFoundPage'));
-const List = loadable(() => import('@/pages/List'));
-const MenuManagers = loadable(() => import('@/pages/menu-manager'));
+const LayoutHome = lazy(() => import('@/Layout'));
+const Home = lazy(() => import('@/pages/Home'));
+const Login = lazy(() => import('@/pages/Login'));
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
+const List = lazy(() => import('@/pages/List'));
+const MenuManagers = lazy(() => import('@/pages/menu-manager'));
+const UserManagers = lazy(() => import('@/pages/UserManager'));
 
 const isUserAuthenticated = () => {
   const user = getCookie('user');
@@ -25,11 +26,15 @@ const routers = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <MenuManagers />,
+        element: <Home />,
       },
       {
         path: '/menu-manager/menu',
         element: <MenuManagers />,
+      },
+      {
+        path: '/user-manager',
+        element: <UserManagers />,
       },
     ],
   },
