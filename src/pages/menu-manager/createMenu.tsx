@@ -126,6 +126,7 @@ const CreateMenu: React.FC<ISCreateMenuProps> = (props) => {
                   options={[
                     { value: '目录', label: '目录' },
                     { value: '菜单', label: '菜单' },
+                    { value: '系统', label: '系统' },
                   ]}
                   placeholder='请选择菜单类型'
                 />

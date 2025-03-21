@@ -3,5 +3,5 @@
  /build
  /coverage
  /.husky
-README.md
-/.md
+ /.md
+ /.stylelintcache

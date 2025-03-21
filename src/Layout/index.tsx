@@ -23,8 +23,7 @@ const Home: React.FC = () => {
   const getMenuData = async (): Promise<void> => {
     try {
       const getMenuListRes = await getMenuList();
-      const routerData = convertToMenuItems(getMenuListRes || []);
-
+      const routerData = convertToMenuItems(getMenuListRes?.[0]?.children || []);
       dispatch(setMenuData(routerData));
     } catch (error) {
       console.log(error);
