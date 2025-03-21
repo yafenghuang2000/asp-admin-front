@@ -4,7 +4,7 @@
 DOCKER_USERNAME="yafenghuang"
 REPO_NAME="asp-xms-vite"
 IMAGE_NAME=${1:-"${DOCKER_USERNAME}/${REPO_NAME}:production"}  # 从命令行参数中获取镜像名称，默认为 yafenghuang/asp-xms-vite:production
-PORT=${PORT:-8000}    # 默认本地端口为 8000
+PORT=${PORT:-80}    # 默认本地端口为 8000
 MAX_PORT_ATTEMPTS=10  # 最大端口尝试次数
 
 # 从镜像名称中提取环境名称
@@ -13,6 +13,16 @@ if [ -z "$ENV" ]; then
   echo "错误：无法从镜像名称中提取环境名称"
   exit 1
 fi
+
+# 根据环境设置 SERVICE_PORT
+if [ "$ENV" == "test" ]; then
+    PORT=8000  # 测试环境端口
+elif [ "$ENV" == "staging" ]; then
+    PORT=8080  # 预发布环境端口
+elif [ "$ENV" == "development" ]; then
+    PORT=8888  # 开发环境端口
+fi
+
 CONTAINER_NAME="asp-xms-vite-${ENV}"  # 容器名称根据环境名称动态设置
 
 # 检查容器名称是否被占用
@@ -32,22 +42,22 @@ docker pull "${IMAGE_NAME}" || {
   exit 1
 }
 
-# 检查端口是否被占用
-port_attempts=0
-while [ ${port_attempts} -lt ${MAX_PORT_ATTEMPTS} ]; do
-  if ! lsof -i :"${PORT}" > /dev/null 999>&1; then
-    echo "端口 ${PORT} 可用"
-    break
-  fi
-  echo "端口 ${PORT} 已被占用，尝试端口 $((PORT + 1))"
-  PORT=$((PORT + 1))
-  port_attempts=$((port_attempts + 1))
-done
+# # 检查端口是否被占用
+# port_attempts=0
+# while [ ${port_attempts} -lt ${MAX_PORT_ATTEMPTS} ]; do
+#   if ! lsof -i :"${PORT}" > /dev/null 999>&1; then
+#     echo "端口 ${PORT} 可用"
+#     break
+#   fi
+#   echo "端口 ${PORT} 已被占用，尝试端口 $((PORT + 1))"
+#   PORT=$((PORT + 1))
+#   port_attempts=$((port_attempts + 1))
+# done
 
-if [ ${port_attempts} -ge ${MAX_PORT_ATTEMPTS} ]; then
-  echo "错误：未找到可用端口"
-  exit 1
-fi
+# if [ ${port_attempts} -ge ${MAX_PORT_ATTEMPTS} ]; then
+#   echo "错误：未找到可用端口"
+#   exit 1
+# fi
 
 # 运行容器
 echo "启动 ${IMAGE_NAME} 容器，使用端口 ${PORT}..."
@@ -63,10 +73,17 @@ docker run -d \
 echo "检查容器是否启动成功..."
 sleep 5  # 等待容器启动
 if docker ps --filter "name=${CONTAINER_NAME}" --format "{{.Status}}" | grep -q "Up"; then
-  echo "容器已成功启动，访问地址：http://localhost:${PORT}"
+  echo "启动成功"
+  # 删除所有未使用的镜像
+  echo "删除所有未使用的镜像..."
+  docker image prune -f || {
+    echo "删除未使用的镜像失败"
+  }
 else
   echo "容器启动失败，请查看日志："
   docker logs "${CONTAINER_NAME}"
   docker rm -f "${CONTAINER_NAME}" > /dev/null 2>&1 || true
   exit 1
 fi
+
+  echo "容器已成功启动，访问地址：http://localhost:${PORT}"

@@ -34,14 +34,15 @@ echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin || {
   exit 1
 }
 
-# # 登录 DockerHub
+
+# # 登录 DockerHub(请写在CI环境中)
 # echo "5820@Feng" | docker login -u yafenghuang2000@gmail.com --password-stdin || {
 #   echo "DockerHub 登录失败"
 #   exit 1
 # }
 
 # 清理构建缓存
-docker builder prune
+docker builder prune -f
 
 # 构建镜像
 echo "开始构建 ${IMAGE_NAME} 镜像..."
