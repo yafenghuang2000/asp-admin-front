@@ -33,7 +33,7 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 # COPY ./ssl/private.key /etc/nginx/ssl/private.key
 
 # 复制 Nginx 位置配置文件
-COPY ./nginx.location.conf /etc/nginx/nginx.location.conf
+COPY ./nginx_location.conf /etc/nginx/nginx_location.conf
 
 # 复制构建好的应用文件
 COPY --from=builder /app/dist /usr/share/nginx/html

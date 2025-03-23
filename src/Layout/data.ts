@@ -10,8 +10,8 @@ export interface IMenuItem {
   children?: Array<IMenuItem> | undefined;
 }
 
-export const convertToMenuItems = (item: IMenuItem[]): IMenuItem[] => {
-  return item.map((item) => {
+export const convertToMenuItems = (data: IMenuItem[]): IMenuItem[] => {
+  return data.map((item) => {
     return {
       id: item.id,
       key: item.key,
