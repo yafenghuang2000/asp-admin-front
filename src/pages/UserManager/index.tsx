@@ -4,6 +4,7 @@ import { Button, Flex, Table, Pagination } from 'antd';
 import type { TableProps } from 'antd';
 import { useMount } from 'ahooks';
 import FormSearcher from './FormSearcher.tsx';
+import CreateForm from './createForm.tsx';
 import './index.scss';
 
 const UserManager: React.FC = () => {
@@ -13,6 +14,7 @@ const UserManager: React.FC = () => {
   const [total, setTotal] = useState(0);
   const [tableLoading, setTableLoading] = useState(false);
   const [maxHeight, setMaxHeight] = useState(200);
+  const [open, setOpen] = useState(false);
 
   useMount(() => {
     setTableLoading(true);
@@ -80,7 +82,7 @@ const UserManager: React.FC = () => {
         <div className='userManager-header-title'>用户管理</div>
         <div className='userManager-header-btn'>
           <Flex wrap gap='small'>
-            <Button type='primary' icon={<PlusOutlined />}>
+            <Button type='primary' icon={<PlusOutlined />} onClick={() => setOpen(true)}>
               添加用户
             </Button>
             <Button type='primary' icon={<PlusOutlined />}>
@@ -124,6 +126,8 @@ const UserManager: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {open && <CreateForm open={open} onClose={() => setOpen(false)} />}
     </div>
   );
 };
