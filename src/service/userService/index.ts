@@ -10,7 +10,7 @@ export const login = (): Promise<unknown> => {
  */
 
 export const addMenu = (data: IScreateMensItems): Promise<string> =>
-  post({ url: '/menu/create', data });
+  post({ url: '/menu/create', data }) as unknown as Promise<string>;
 
 /**
  * 查询菜单列表
