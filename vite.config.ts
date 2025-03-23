@@ -46,10 +46,10 @@ export default defineConfig(({ mode }) => {
       cors: true,
       strict: true,
       proxy: {
-        '/api': {
+        [`/${env.VITE_APP_BASE_API}`]: {
           target: `${env.VITE_APP_BASE_URL}`,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          rewrite: (path) => path.replace(new RegExp(`^/${env.VITE_APP_BASE_API}`), ''),
         },
       },
     },

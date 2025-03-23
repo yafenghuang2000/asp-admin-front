@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Drawer, Form, Input, InputNumber, notification, Select } from 'antd';
 import { addMenu } from '@/service/userService';
 import { filterNullAndUndefined } from '@/utils/commonFunction.ts';
+import { IScreateMensItems } from '@/service/userService/type.ts';
 import { titleConfig, ISMenuDetail } from './data';
 import './createmenu.scss';
 
@@ -53,9 +54,8 @@ const CreateMenu: React.FC<ISCreateMenuProps> = (props) => {
           parentId: menuDetail?.id,
         });
       }
-      console.log(params, 'menuDetail', menuDetail);
 
-      const res = await addMenu(filterNullAndUndefined(params));
+      const res = await addMenu(filterNullAndUndefined(params) as IScreateMensItems);
       onClose();
       getMenuAll();
       notification.open({

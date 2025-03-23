@@ -1,4 +1,5 @@
 import { post, get } from '@/utils/request';
+import { ISMenusResponse, IScreateMensItems } from './type.ts';
 
 export const login = (): Promise<unknown> => {
   return post({ url: '/login', data: { username: 'admin', password: '123456' } });
@@ -7,12 +8,11 @@ export const login = (): Promise<unknown> => {
 /**
  * 新增菜单
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-export const addMenu = (data: any): Promise<any> => post({ url: '/api/menu/create', data });
+
+export const addMenu = (data: IScreateMensItems): Promise<string> =>
+  post({ url: '/menu/create', data });
 
 /**
  * 查询菜单列表
  */
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getMenuList = (): Promise<any> => get({ url: '/api/menu/queryAll' });
+export const getMenuList = (): Promise<ISMenusResponse[]> => get({ url: '/menu/queryAll' });

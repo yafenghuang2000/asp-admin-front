@@ -1,6 +1,8 @@
 import request, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { notification } from 'antd';
 
+const apiPrefix = import.meta.env.VITE_APP_BASE_API;
+
 interface IResponseConfig<T> {
   url: string;
   data?: T;
@@ -14,21 +16,13 @@ request.interceptors.request.use(
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
     }
+    config.url = `/${apiPrefix}${config.url}`;
     return config;
   },
   (error) => {
     return Promise.reject(error);
   },
 );
-//
-// request.interceptors.response.use(
-//   (res) => {
-//     console.log(res);
-//   },
-//   (error) => {
-//     console.log(error.response.data, 'sadad');
-//   },
-// );
 
 const parse = (res: AxiosResponse, params: { handleRaw: boolean }) => {
   const { status, data } = res;

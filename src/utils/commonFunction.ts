@@ -116,14 +116,11 @@ export const getMonthDaysInRange = (
   return result;
 };
 
-export function filterNullAndUndefined(obj: Record<string, unknown>): Record<string, unknown> {
-  return Object.keys(obj).reduce(
-    (acc, key) => {
-      if (obj[key] !== null && obj[key] !== undefined) {
-        acc[key] = obj[key];
-      }
-      return acc;
-    },
-    {} as Record<string, unknown>,
-  );
+export function filterNullAndUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> {
+  return Object.keys(obj).reduce((acc, key) => {
+    if (obj[key] !== null && obj[key] !== undefined) {
+      acc[key as keyof T] = obj[key] as T[keyof T];
+    }
+    return acc;
+  }, {} as Partial<T>);
 }
