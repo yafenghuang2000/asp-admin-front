@@ -32,7 +32,7 @@ export const titleConfig = [
 
 export interface ISMenuDetail {
   id?: string;
-  key: string;
+  key?: string;
   title: string;
   code: string;
   path: string;

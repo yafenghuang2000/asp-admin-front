@@ -1,209 +1,225 @@
-import request, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import request, { AxiosResponse, InternalAxiosRequestConfig, AxiosError } from 'axios';
 import { notification } from 'antd';
 
 const apiPrefix = import.meta.env.VITE_APP_BASE_API;
+const DEFAULT_TIMEOUT = 10000;
 
-interface IResponseConfig<T> {
+// 创建axios实例
+const instance = request.create({
+  timeout: DEFAULT_TIMEOUT,
+  baseURL: `/${apiPrefix}`,
+});
+
+// 请求配置接口
+interface IRequestConfig<T> {
   url: string;
   data?: T;
   handleRaw?: boolean;
+  timeout?: number;
+  cancelToken?: AbortController;
 }
 
-request.interceptors.request.use(
+// 响应数据接口
+interface IResponse<T = unknown> {
+  code: number;
+  data: T;
+  message: string;
+}
+
+// 错误消息接口
+interface IErrorMessage {
+  message: string;
+  description: string;
+  action?: () => void;
+}
+
+// 请求拦截器
+instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
     }
-    config.url = `/${apiPrefix}${config.url}`;
     return config;
   },
-  (error) => {
+  (error: AxiosError) => {
     return Promise.reject(error);
   },
 );
 
-const parse = (res: AxiosResponse, params: { handleRaw: boolean }) => {
+// 响应拦截器
+instance.interceptors.response.use(
+  (response: AxiosResponse) => {
+    return response;
+  },
+  (error: AxiosError) => {
+    if (error.response) {
+      const { status, data } = error.response;
+      handleError(status, data as IResponse);
+    } else if (error.request) {
+      notification.error({
+        message: '网络错误',
+        description: '请检查网络连接',
+        placement: 'bottomRight',
+        duration: 5000,
+      });
+    } else {
+      notification.error({
+        message: '请求错误',
+        description: error.message,
+        placement: 'bottomRight',
+        duration: 5000,
+      });
+    }
+    return Promise.reject(error);
+  },
+);
+
+// 统一错误处理
+const handleError = (status: number, data: IResponse) => {
+  const errorMessages: Record<number, IErrorMessage> = {
+    401: {
+      message: '提示',
+      description: '登录超时，请重新登录',
+      action: () => (window.location.href = '/login'),
+    },
+    403: {
+      message: '权限错误',
+      description: '您没有权限访问该资源',
+    },
+    404: {
+      message: '系统提示',
+      description: '访问地址不存在，请联系管理员',
+    },
+    500: {
+      message: '系统错误',
+      description: data?.message || '服务器内部错误',
+    },
+  };
+
+  const error = errorMessages[status] || {
+    message: '错误',
+    description: data?.message || '系统异常',
+  };
+
+  notification.error({
+    message: error.message,
+    description: error.description,
+    placement: 'bottomRight',
+    duration: 5000,
+  });
+
+  if (error.action) {
+    error.action();
+  }
+};
+
+// 统一响应处理
+const parse = <R>(res: AxiosResponse, params: { handleRaw: boolean }): R => {
   const { status, data } = res;
+  const { handleRaw } = params;
 
-  const { handleRaw } = params || {};
-  switch (status) {
-    case 200:
-      if (handleRaw) {
-        return data;
-      }
-      if (data.code === 0) {
-        return data.data;
-      } else if (data.code === 401) {
-        notification.open({
-          type: 'warning',
-          message: '提示',
-          description: '登陆超时,请你重新登陆',
-          placement: 'bottomRight',
-          duration: 5000,
-        });
-        window.location.href = '/login';
-        return;
-      } else {
-        notification.open({
-          type: 'error',
-          message: '提示',
-          description: data.message || '系统异常',
-          placement: 'bottomRight',
-          duration: 5000,
-        });
-      }
-      break;
-    case 401:
-      notification.open({
-        type: 'warning',
-        message: '提示',
-        description: '登陆超时,请你重新登陆',
-        placement: 'bottomRight',
-        duration: 5000,
-      });
-      window.location.href = '/login';
-      break;
-    case 404:
-      notification.open({
-        type: 'warning',
-        message: '系统提示',
-        description: '访问地址不存在,请联系管理',
-        placement: 'bottomRight',
-      });
-      break;
-    case 500:
-      notification.open({
-        type: 'error',
-        message: '提示',
-        description: data.message || '系统异常',
-        placement: 'bottomRight',
-        duration: 5000,
-      });
-      break;
-    default:
-      notification.open({
-        type: 'error',
-        message: '提示',
-        description: data.message || '系统异常',
-        placement: 'bottomRight',
-        duration: 5000,
-      });
+  if (status === 200) {
+    if (handleRaw) {
+      return data as R;
+    }
+    if (data.code === 0) {
+      return data.data as R;
+    }
+    handleError(status, data);
+    return data.data as R;
   }
+
+  handleError(status, data);
+  return data.data as R;
 };
 
-const get = async <T>(data: IResponseConfig<T>): Promise<T> => {
+// 基础请求方法
+const requestMethod = async <T, R>(
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  config: IRequestConfig<T>,
+): Promise<R> => {
   try {
-    const response: AxiosResponse = await request({
-      method: 'GET',
-      url: data.url,
-      params: data.data,
+    const { url, data, handleRaw, timeout, cancelToken } = config;
+    const response = await instance({
+      method,
+      url,
+      [method === 'GET' ? 'params' : 'data']: data,
+      timeout,
+      signal: cancelToken?.signal,
     });
-    const parsedParams = { handleRaw: !!data.handleRaw };
-    return parse(response, parsedParams) as unknown as T;
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-
-const post = async <T>(data: IResponseConfig<T>): Promise<T> => {
-  try {
-    const response: AxiosResponse = await request({
-      method: 'POST',
-      url: data.url,
-      data: data.data,
-    });
-    console.log(response, 'response');
-    const parsedParams = { handleRaw: !!data.handleRaw };
-    return parse(response, parsedParams);
+    return parse<R>(response, { handleRaw: !!handleRaw });
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
-const put = async <T>(data: IResponseConfig<T>): Promise<T> => {
-  try {
-    const response: AxiosResponse = await request({
-      method: 'PUT',
-      url: data.url,
-      data: data.data,
-    });
-    const parsedParams = { handleRaw: !!data.handleRaw };
-    return parse(response, parsedParams);
-  } catch (error) {
-    console.log(error);
-    return Promise.reject(error);
-  }
-};
+// 导出请求方法
+export const get = <T, R>(config: IRequestConfig<T>): Promise<R> =>
+  requestMethod<T, R>('GET', config);
 
-const del = async <T>(data: IResponseConfig<T>): Promise<T> => {
-  try {
-    const response: AxiosResponse = await request({
-      method: 'DELETE',
-      url: data.url,
-      data: data.data,
-    });
-    const parsedParams = { handleRaw: !!data.handleRaw };
-    return parse(response, parsedParams);
-  } catch (error) {
-    console.log(error);
-    return Promise.reject(error);
-  }
-};
+export const post = <T, R>(config: IRequestConfig<T>): Promise<R> =>
+  requestMethod<T, R>('POST', config);
 
-const uploadSingleFile = async <T>(data: IResponseConfig<File | Blob>): Promise<T> => {
-  if (!data.data) {
+export const put = <T, R>(config: IRequestConfig<T>): Promise<R> =>
+  requestMethod<T, R>('PUT', config);
+
+export const del = <T, R>(config: IRequestConfig<T>): Promise<R> =>
+  requestMethod<T, R>('DELETE', config);
+
+// 文件上传方法
+export const uploadSingleFile = async <T>(config: IRequestConfig<File | Blob>): Promise<T> => {
+  if (!config.data) {
     throw new Error('File or Blob data is required');
   }
 
+  const formData = new FormData();
+  formData.append('file', config.data);
+
   try {
-    const formData = new FormData();
-    formData.append('file', data.data);
-    const response = await request({
+    const response = await instance({
       method: 'POST',
-      url: data.url,
+      url: config.url,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+      timeout: config.timeout,
+      signal: config.cancelToken?.signal,
     });
-
-    const parsedParams = { handleRaw: !!data.handleRaw };
-    return parse(response, parsedParams);
+    return parse(response, { handleRaw: !!config.handleRaw });
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
-const uploadFile = async <T>(data: IResponseConfig<File[] | Blob[]>): Promise<T> => {
-  if (!Array.isArray(data.data)) {
+export const uploadFile = async <T>(config: IRequestConfig<File[] | Blob[]>): Promise<T> => {
+  if (!Array.isArray(config.data)) {
     throw new Error('Data must be an array of File or Blob objects');
   }
 
   const formData = new FormData();
-  data.data.forEach((file, index) => {
+  config.data.forEach((file, index) => {
     if (!(file instanceof File || file instanceof Blob)) {
       throw new Error(`Element at index ${index} is not a File or Blob object`);
     }
-    formData.append('files', file); // 使用 'files' 作为字段名以支持多个文件
+    formData.append('files', file);
   });
 
   try {
-    const response = await request({
+    const response = await instance({
       method: 'POST',
-      url: data.url,
+      url: config.url,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+      timeout: config.timeout,
+      signal: config.cancelToken?.signal,
     });
-
-    const parsedParams = { handleRaw: !!data.handleRaw };
-    return parse(response, parsedParams);
+    return parse(response, { handleRaw: !!config.handleRaw });
   } catch (error) {
     return Promise.reject(error);
   }
 };
-
-export { get, post, put, del, uploadSingleFile, uploadFile };
