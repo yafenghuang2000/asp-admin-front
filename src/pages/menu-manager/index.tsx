@@ -155,12 +155,10 @@ const MenuManager: React.FC = () => {
                   <div className='content'>{menuDetail?.path ?? '--'}</div>
                 </div>
                 <div className='menu-container-content-lable'>
-                  {' '}
                   <div className='title'>菜单排序</div>
                   <div className='content'>{menuDetail?.sortOrder ?? '--'}</div>
                 </div>
                 <div className='menu-container-content-lable'>
-                  {' '}
                   <div className='title'>备注信息</div>
                   <div className='content'>{menuDetail?.remark ?? '--'}</div>
                 </div>
