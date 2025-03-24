@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Button, Tree, Empty } from 'antd';
 import type { TreeProps } from 'antd';
+import { useMount } from 'ahooks';
 import { getMenuList } from '@/service/userService';
 import CreateMenu from './createMenu.tsx';
 import { ISMenuDetail, convertToMenuItems } from './data.ts';
@@ -13,6 +14,7 @@ const MenuManager: React.FC = () => {
   const [treeData, setteeData] = useState<ISMenuDetail[]>([]);
   const [treeElementHeight, setTreeElementHeight] = useState(0);
   const treeRef = useRef<HTMLDivElement>(null);
+
   const [menuDetail, setMenuDetail] = useState<ISMenuDetail | null>(null);
   const [menuList, setMenuList] = useState<ISMenuDetail[]>([]);
   const [open, setOpen] = useState(false);
@@ -40,29 +42,29 @@ const MenuManager: React.FC = () => {
   const getMenuAll = async (): Promise<void> => {
     try {
       const result = await getMenuList();
-      const menuData = convertToMenuItems(result || []);
-      setteeData(convertToMenuItems(result || []));
+      const menuData = convertToMenuItems(result);
+      setteeData(menuData);
       setSelectedKeys([menuData?.[0]?.id ?? '']);
-
       setMenuDetail({
         id: menuData?.[0]?.id,
         key: menuData?.[0]?.key,
-        title: menuData?.[0]?.title ?? null, // 提供默认值
+        title: menuData?.[0]?.title, // 提供默认值
         path: menuData?.[0]?.path,
-        code: menuData?.[0]?.code ?? null,
+        code: menuData?.[0]?.code,
         type: menuData[0]?.type,
         icon: menuData?.[0]?.icon,
         sortOrder: menuData?.[0]?.sortOrder || 0,
-        remark: menuData?.[0]?.remark ?? null,
+        remark: menuData?.[0]?.remark,
       });
     } catch (e) {
       console.log(e);
     }
   };
 
-  useEffect(() => {
-    void getMenuAll();
-  }, []);
+  useMount(async () => {
+    await getMenuAll();
+  });
+
   const onSelect: TreeProps['onSelect'] = (_, info) => {
     const node = info.node as unknown as ISMenuDetail;
 
@@ -77,9 +79,11 @@ const MenuManager: React.FC = () => {
       icon: node.icon,
       sortOrder: node.sortOrder,
       remark: node.remark,
+      children: node.children || [], // 添加children属性
     });
     setMenuList(node.children || []);
   };
+
   return (
     <div className='menuManager'>
       <div className='menuManager-header'>
@@ -108,7 +112,6 @@ const MenuManager: React.FC = () => {
               </div>
               <div className='menu-item-list' ref={treeRef}>
                 <DirectoryTree
-                  multiple
                   draggable
                   showLine
                   height={treeElementHeight}
@@ -165,17 +168,19 @@ const MenuManager: React.FC = () => {
               <div className='menu-container-submenus'>
                 <div className='menu-container-submenus-create'>
                   <div className='title'>菜单信息</div>
-                  <Button
-                    type='link'
-                    icon={<PlusOutlined />}
-                    style={{ color: '#000' }}
-                    onClick={() => {
-                      setOpen(true);
-                      setTitle('createMenu');
-                    }}
-                  >
-                    创建
-                  </Button>
+                  {menuDetail?.type !== '菜单' && (
+                    <Button
+                      type='link'
+                      icon={<PlusOutlined />}
+                      style={{ color: '#000' }}
+                      onClick={() => {
+                        setOpen(true);
+                        setTitle('createMenu');
+                      }}
+                    >
+                      创建
+                    </Button>
+                  )}
                 </div>
                 <div className='menu-container-submenus-list'>
                   {menuList.length <= 0 ? (

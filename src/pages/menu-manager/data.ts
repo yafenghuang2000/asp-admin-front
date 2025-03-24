@@ -1,15 +1,5 @@
 import React from 'react';
-
-export const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14 },
-  },
-};
+import { FileOutlined, FolderOutlined } from '@ant-design/icons';
 
 export const titleConfig = [
   {
@@ -31,33 +21,27 @@ export const titleConfig = [
 ];
 
 export interface ISMenuDetail {
-  id?: string;
-  key?: string;
+  children?: ISMenuDetail[] | undefined;
+  id: string;
+  key: string;
   title: string;
   code: string;
   path: string;
   type: string;
-  icon?: React.ReactNode | null;
+  icon?: React.ReactNode;
   sortOrder: number;
-  description?: string | null;
-  remark?: string | null;
-  children?: Array<ISMenuDetail> | undefined;
+  description?: string | undefined;
+  remark?: string | undefined;
+  parentId?: string | undefined;
 }
 
-export const convertToMenuItems = (items: ISMenuDetail[]): ISMenuDetail[] => {
-  return items.map((item) => {
-    return {
-      id: item.id,
-      key: item.key,
-      title: item.title,
-      code: item.code,
-      path: item.path,
-      type: item.type,
-      icon: item.icon,
-      sortOrder: item.sortOrder,
-      description: item.description,
-      remark: item.remark,
-      children: item.children?.length ? convertToMenuItems(item.children) : undefined,
-    };
-  });
+export const convertToMenuItems = (data: ISMenuDetail[]): ISMenuDetail[] => {
+  return data.map((item) => ({
+    ...item,
+    icon:
+      !item.children || item.children.length === 0
+        ? React.createElement(FileOutlined)
+        : React.createElement(FolderOutlined),
+    children: item.children?.length ? convertToMenuItems(item.children) : undefined,
+  }));
 };
