@@ -17,6 +17,7 @@ interface IRequestConfig<T> {
   handleRaw?: boolean;
   timeout?: number;
   cancelToken?: AbortController;
+  retry?: number;
 }
 
 // 响应数据接口
@@ -107,7 +108,6 @@ const handleError = (status: number, data: IResponse) => {
     message: error.message,
     description: error.description,
     placement: 'bottomRight',
-    duration: 5000,
   });
 
   if (error.action) {
@@ -140,19 +140,30 @@ const requestMethod = async <T, R>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   config: IRequestConfig<T>,
 ): Promise<R> => {
-  try {
-    const { url, data, handleRaw, timeout, cancelToken } = config;
-    const response = await instance({
-      method,
-      url,
-      [method === 'GET' ? 'params' : 'data']: data,
-      timeout,
-      signal: cancelToken?.signal,
-    });
-    return parse<R>(response, { handleRaw: !!handleRaw });
-  } catch (error) {
-    return Promise.reject(error);
+  const { retry = 0 } = config;
+  let attempts = 0;
+
+  while (attempts <= retry) {
+    try {
+      const { url, data, handleRaw, timeout = 5000, cancelToken } = config;
+      const response = await instance({
+        method,
+        url,
+        [method === 'GET' ? 'params' : 'data']: data,
+        timeout,
+        signal: cancelToken?.signal,
+      });
+      return parse<R>(response, { handleRaw: !!handleRaw });
+    } catch (error) {
+      attempts++;
+      if (attempts > retry) {
+        return Promise.reject(error);
+      }
+    }
   }
+
+  // 确保在所有路径都有返回值
+  throw new Error('请求失败，已达到最大重试次数'); // 或者返回一个默认值
 };
 
 // 导出请求方法

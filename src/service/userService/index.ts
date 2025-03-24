@@ -1,10 +1,6 @@
 import { post, get } from '@/utils/request';
 import { ISMenusResponse, IScreateMensItems } from './type.ts';
 
-export const login = (): Promise<unknown> => {
-  return post({ url: '/login', data: { username: 'admin', password: '123456' } });
-};
-
 /**
  * 新增菜单
  */
