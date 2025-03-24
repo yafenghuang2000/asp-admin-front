@@ -1,15 +1,6 @@
 import request, { AxiosResponse, InternalAxiosRequestConfig, AxiosError } from 'axios';
 import { notification } from 'antd';
 
-const apiPrefix = import.meta.env.VITE_APP_BASE_API;
-const DEFAULT_TIMEOUT = 5000;
-
-// 创建axios实例
-const instance = request.create({
-  timeout: DEFAULT_TIMEOUT,
-  baseURL: `/${apiPrefix}`,
-});
-
 // 请求配置接口
 interface IRequestConfig<T> {
   url: string;
@@ -33,6 +24,14 @@ interface IErrorMessage {
   description: string;
   action?: () => void;
 }
+
+const apiPrefix = import.meta.env.VITE_APP_BASE_API;
+const DEFAULT_TIMEOUT = 5000;
+
+const instance = request.create({
+  timeout: DEFAULT_TIMEOUT,
+  baseURL: `/${apiPrefix}`,
+});
 
 // 请求拦截器
 instance.interceptors.request.use(
@@ -63,14 +62,12 @@ instance.interceptors.response.use(
         message: '网络错误',
         description: '请检查网络连接',
         placement: 'bottomRight',
-        duration: 5000,
       });
     } else {
       notification.error({
         message: '请求错误',
         description: error.message,
         placement: 'bottomRight',
-        duration: 5000,
       });
     }
     return Promise.reject(error);
@@ -163,7 +160,7 @@ const requestMethod = async <T, R>(
   }
 
   // 确保在所有路径都有返回值
-  throw new Error('请求失败，已达到最大重试次数'); // 或者返回一个默认值
+  throw new Error('请求失败，已达到最大重试次数');
 };
 
 // 导出请求方法
