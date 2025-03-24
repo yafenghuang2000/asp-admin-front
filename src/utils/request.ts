@@ -2,7 +2,7 @@ import request, { AxiosResponse, InternalAxiosRequestConfig, AxiosError } from '
 import { notification } from 'antd';
 
 const apiPrefix = import.meta.env.VITE_APP_BASE_API;
-const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 5000;
 
 // 创建axios实例
 const instance = request.create({
