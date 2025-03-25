@@ -132,7 +132,6 @@ const parse = <R>(res: AxiosResponse, params: { handleRaw: boolean }): R => {
   return data.data as R;
 };
 
-// 基础请求方法
 const requestMethod = async <T, R>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   config: IRequestConfig<T>,
@@ -159,7 +158,6 @@ const requestMethod = async <T, R>(
     }
   }
 
-  // 确保在所有路径都有返回值
   throw new Error('请求失败，已达到最大重试次数');
 };
 

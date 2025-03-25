@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Drawer, Form, Input, Select, Row, Col } from 'antd';
+import { Button, Drawer, Form, Input, Select, Row, Col, notification } from 'antd';
 import { useMount } from 'ahooks';
+import { register } from '@/service/userService';
+import { IRegisterUser } from '@/service/userService/type.ts';
+import { filterNullAndUndefined } from '@/utils/commonFunction.ts';
 import './createForm.scss';
 
 interface ISCreateMenuProps {
@@ -18,9 +21,25 @@ const CreateForm: React.FC<ISCreateMenuProps> = (props) => {
     setLoading(false);
   });
 
-  const onSubmit = () => {
-    console.log('提交');
-    setSaveLoading(false);
+  const onSubmit = async () => {
+    const values = await form.validateFields();
+    if (!values) return;
+    try {
+      setSaveLoading(true);
+      const params = filterNullAndUndefined(values) as IRegisterUser;
+      const res = await register(params);
+      if (res) {
+        notification.open({
+          type: 'success',
+          message: '系统提示',
+          description: '新增用户成功',
+        });
+      }
+    } catch (error) {
+      console.log(error, 'error');
+    } finally {
+      setSaveLoading(false);
+    }
   };
 
   return (
@@ -58,7 +77,7 @@ const CreateForm: React.FC<ISCreateMenuProps> = (props) => {
             <Col span={12}>
               <Form.Item
                 label='姓名'
-                name='name'
+                name='nickname'
                 rules={[{ required: true, message: '请输入姓名' }]}
               >
                 <Input placeholder='请输入姓名' />
@@ -92,14 +111,22 @@ const CreateForm: React.FC<ISCreateMenuProps> = (props) => {
                 name='type'
                 rules={[{ required: true, message: '请选择用户类型' }]}
               >
-                <Select options={[]} placeholder='请选择用户类型' />
+                <Select
+                  options={[
+                    {
+                      value: 'admin',
+                      label: '超级管理',
+                    },
+                  ]}
+                  placeholder='请选择用户类型'
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 label='所属组织'
                 name='organization'
-                rules={[{ required: true, message: '请选择所属组织' }]}
+                rules={[{ required: false, message: '请选择所属组织' }]}
               >
                 <Select options={[]} placeholder='请选择所属组织' />
               </Form.Item>

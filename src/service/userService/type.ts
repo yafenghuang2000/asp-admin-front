@@ -15,7 +15,7 @@ export interface ISMenusResponse {
 }
 
 //新增菜单项
-export interface IScreateMensItems {
+export interface ICreateMensItems {
   id?: string;
   title: string;
   code: string;
@@ -26,4 +26,16 @@ export interface IScreateMensItems {
   description: string;
   remark: string;
   parentId?: string;
+}
+
+//注册用户
+export interface IRegisterUser {
+  username: string;
+  nickname: string; //姓名
+  email: string;
+  phone: string;
+  type: string;
+  organization?: string; //所属组织
+  role?: string[]; //权限
+  status: string;
 }
