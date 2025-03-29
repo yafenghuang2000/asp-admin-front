@@ -31,6 +31,7 @@ export interface ICreateMensItems {
 //注册用户
 export interface IRegisterUser {
   username: string;
+  password: string;
   nickname: string; //姓名
   email: string;
   phone: string;
@@ -38,4 +39,14 @@ export interface IRegisterUser {
   organization?: string; //所属组织
   role?: string[]; //权限
   status: string;
+}
+
+export interface ILoginUser {
+  username: string;
+  password: string;
+}
+
+export interface IUserInfo {
+  username: string;
+  token: string;
 }

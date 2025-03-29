@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import { createBrowserRouter, redirect } from 'react-router-dom';
-import { getCookie } from '@/utils/StorageValue';
+import { getLocalStorage } from '@/utils/StorageValue';
 
 const LayoutHome = lazy(() => import('@/Layout'));
 const Home = lazy(() => import('@/pages/Home'));
@@ -11,7 +11,7 @@ const MenuManagers = lazy(() => import('@/pages/menu-manager'));
 const UserManagers = lazy(() => import('@/pages/UserManager'));
 
 const isUserAuthenticated = () => {
-  const user = getCookie('user');
+  const user = getLocalStorage('user');
   if (!user) {
     return redirect('/login');
   }

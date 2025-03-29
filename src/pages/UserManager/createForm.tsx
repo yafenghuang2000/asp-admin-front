@@ -27,13 +27,14 @@ const CreateForm: React.FC<ISCreateMenuProps> = (props) => {
     try {
       setSaveLoading(true);
       const params = filterNullAndUndefined(values) as IRegisterUser;
-      const res = await register(params);
+      const res = await register({ ...params, password: '123456' });
       if (res) {
         notification.open({
           type: 'success',
           message: '系统提示',
           description: '新增用户成功',
         });
+        onClose();
       }
     } catch (error) {
       console.log(error, 'error');

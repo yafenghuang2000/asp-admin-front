@@ -2,9 +2,9 @@ import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProConfigProvider, ProFormText } from '@ant-design/pro-components';
 import { theme } from 'antd';
-import { setCookie } from '@/utils/StorageValue';
-import TrackingService from '@/utils/trackingService';
+import { setLocalStorage } from '@/utils/StorageValue.ts';
 import { useGoHome } from '@/hooks/routerHooks';
+import { login } from '@/service/userService';
 import './index.scss';
 
 const Login: React.FC = () => {
@@ -35,15 +35,14 @@ const Login: React.FC = () => {
     return 'poor'; // 其他情况返回弱
   };
 
-  const onFinish = (values: { username: string; password: string }) => {
-    console.log('Success:', values);
-    setCookie({
-      key: 'user',
-      value: values.username,
-      options: { expires: 7, path: '/', sameSite: 'Lax' },
-    });
-    goHome();
-    TrackingService.trackEvent('click', { buttonId: 'submit-button', openId: values.username });
+  const onFinish = async (values: { username: string; password: string }) => {
+    try {
+      const res = await login(values);
+      setLocalStorage('user', res.token);
+      goHome();
+    } catch (error) {
+      console.log(error, 'error');
+    }
   };
 
   return (
