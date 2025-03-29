@@ -85,12 +85,12 @@ const MenuManager: React.FC = () => {
   };
 
   return (
-    <div className='menuManager'>
-      <div className='menuManager-header'>
-        <div className='menuManager-header-title'>菜单管理</div>
+    <div className='menumanager'>
+      <div className='menumanager-header'>
+        <div className='menumanager-header-title'>菜单管理</div>
       </div>
-      <div className='menuManager-container'>
-        <div className='menuManager-container-box'>
+      <div className='menumanager-container'>
+        <div className='menumanager-container-box'>
           <div className='menu'>
             <div className='menu-item'>
               <div className='menu-item-header'>
